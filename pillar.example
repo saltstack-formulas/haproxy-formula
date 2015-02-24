@@ -1,0 +1,85 @@
+#
+# Example pillar configuration
+#
+
+haproxy:
+  global:
+    stats:
+      enable: True
+      socketpath: /var/lib/haproxy/stats
+
+    user: haproxy
+    group: haproxy
+    chroot:
+      enable: True
+      path: /var/lib/haproxy
+
+    daemon: True
+
+  defaults:
+    log: global
+    mode: http
+    retries: 3
+    options:
+      - httplog
+      - dontlognull
+      - forwardfor
+      - http-server-close
+    timeouts:
+      - http-request    10s
+      - queue           1m
+      - connect         10s
+      - client          1m
+      - server          1m
+      - http-keep-alive 10s
+      - check           10s
+
+    errorfiles:
+      400: /etc/haproxy/errors/400.http
+      403: /etc/haproxy/errors/403.http
+      408: /etc/haproxy/errors/408.http
+      500: /etc/haproxy/errors/500.http
+      502: /etc/haproxy/errors/502.http
+      503: /etc/haproxy/errors/503.http
+      504: /etc/haproxy/errors/504.http
+
+  frontends:
+    frontend1:
+      name: www-http
+      bind: "*:80"
+      reqadd:
+        - "X-Forwarded-Proto:\\ http"
+      default_backend: www-backend
+
+    frontend2:
+      name: www-https
+      bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
+      reqadd:
+        - "X-Forwarded-Proto:\\ https"
+      default_backend: www-backend
+      acls:
+        - url_static       path_beg       -i /static /images /javascript /stylesheets
+        - url_static       path_end       -i .jpg .gif .png .css .js
+      use_backends:
+        - static  if url_static
+
+  backends:
+    backend1:
+      name: www-backend
+      balance: roundrobin
+      redirect: scheme https if !{ ssl_fc }
+      servers:
+        server1:
+          name: server1-its-name
+          host: 192.168.1.213
+          check: check
+    backend2:
+      name: static
+      balance: roundrobin
+      redirect: scheme https if !{ ssl_fc }
+      servers:
+        server1:
+          name: some-server
+          host: 123.156.189.111
+          port: 8080
+          check: check

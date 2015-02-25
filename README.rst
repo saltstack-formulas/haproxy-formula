@@ -1,9 +1,7 @@
 haproxy
 =======
----
 
-haproxy
--------
+**haproxy:**
 
 Install, configure and run haproxy based on:
 
@@ -53,7 +51,7 @@ Currently, only a handful of options can be set using the pillar:
   + redirect: if set, can be used to redirect; simply a string, not parsed
   + servers: a list of servers this backend will contact, is looped over; per server you can set:
 
-      + name: name of the server for haproxy
-      + host: the host to be contacted
-      + port: the port to contact the server on
-      + check: set to check to enable checking
+    + name: name of the server for haproxy
+    + host: the host to be contacted
+    + port: the port to contact the server on
+    + check: set to check to enable checking

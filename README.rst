@@ -1,7 +1,8 @@
 haproxy
 =======
 
-**haproxy:**
+haproxy
+-------
 
 Install, configure and run haproxy based on:
 

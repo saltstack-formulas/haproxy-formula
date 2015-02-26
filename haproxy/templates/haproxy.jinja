@@ -54,7 +54,8 @@ defaults
 #---------------------------------------------------------------------
 {%- if 'frontends' in salt['pillar.get']('haproxy', {}) %}
 {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
-frontend {{ frontend[1].name }} {{ frontend[1].bind }}
+frontend {{ frontend[1].name }}
+    bind {{ frontend[1].bind }}
 {%- if 'acls' in frontend[1] %}
 {%- for acl in frontend[1].acls %}
     acl {{ acl }}

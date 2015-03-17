@@ -2,6 +2,7 @@ haproxy.service:
   service.running:
     - name: haproxy
     - enable: True
+    - reload: True
     - require:
       - pkg: haproxy
     - watch:

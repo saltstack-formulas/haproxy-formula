@@ -1,20 +1,35 @@
+=======
 haproxy
 =======
 
-haproxy
--------
+Install, configure and run ``haproxy``.
 
-Install, configure and run haproxy based on:
+.. note::
 
-- haproxy.install
-- haproxy.config
-- haproxy.service
+    See the full `Salt Formulas installation and usage instructions
+    <http://docs.saltstack.com/en/latest/topics/development/conventions/formulas.html>`_.
+
+Available states
+================
+
+.. contents::
+    :local:
 
 Use the supplied haproxy.cfg for a flat file approach,
 or the jinja template and the pillar for a salt approach.
 
-haproxy.config
---------------
+``haproxy``
+-----------
+
+Install, configure and run ``haproxy`` service.
+
+``haproxy.install``
+-------------------
+
+Install ``haproxy`` from packages.
+
+``haproxy.config``
+------------------
 
 Currently, only a handful of options can be set using the pillar:
 
@@ -56,3 +71,9 @@ Currently, only a handful of options can be set using the pillar:
     + host: the host to be contacted
     + port: the port to contact the server on
     + check: set to check to enable checking
+
+
+``haproxy.service``
+-------------------
+
+Make sure ``haproxy`` service is running.

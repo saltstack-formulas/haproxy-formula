@@ -55,6 +55,7 @@ Currently, only a handful of options can be set using the pillar:
 
   + name: the name haproxy will use for the frontend
   + bind: the bind string: this allows you to set the IP, Port and other paramters for the bind
+  + redirect: add a redirect line, an unparsed string like in the backend
   + reqadd: an array of reqadd statements. Looped over and put in the configuration, no parsing
   + default_backend: sets the default backend
   + acls: a list of acls, not parsed, simply looped and put in to the configuration

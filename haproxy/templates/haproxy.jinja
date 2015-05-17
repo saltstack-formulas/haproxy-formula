@@ -56,6 +56,10 @@ defaults
 {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
 frontend {{ frontend[1].name }}
     bind {{ frontend[1].bind }}
+{%- if 'redirects' in backend[1] %}
+{%- for redirect in frontend[1].redirects %}
+redirect {{ redirect }}{% endfor %}
+{-% endif %}
 {%- if 'acls' in frontend[1] %}
 {%- for acl in frontend[1].acls %}
     acl {{ acl }}
@@ -82,6 +86,10 @@ frontend {{ frontend[1].name }}
 {%- if 'backends' in salt['pillar.get']('haproxy', {}) %}
 {%- for backend in salt['pillar.get']('haproxy:backends', {}).iteritems() %}
 backend {{ backend[1].name }}
+{%- if 'redirects' in backend[1] %}
+{%- for redirect in backend[1].redirects %}
+redirect {{ redirect }}{% endfor %}
+{-% endif %}
     balance {{ backend[1].balance }}
     {%- if 'servers' in backend[1] %}
     {%- for server in backend[1].servers.iteritems() %}

@@ -48,6 +48,7 @@ haproxy:
     frontend1:
       name: www-http
       bind: "*:80"
+      redirect: scheme https if !{ ssl_fc }
       reqadd:
         - "X-Forwarded-Proto:\\ http"
       default_backend: www-backend

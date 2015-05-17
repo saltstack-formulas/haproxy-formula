@@ -60,7 +60,7 @@ frontend {{ frontend[1].name }}
 {%- for front_redirect in frontend[1].redirects %}
 redirect {{ front_redirect }}
 {% endfor %}
-{-% endif %}
+{%- endif %}
 {%- if 'acls' in frontend[1] %}
 {%- for acl in frontend[1].acls %}
     acl {{ acl }}

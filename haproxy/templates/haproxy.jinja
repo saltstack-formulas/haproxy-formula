@@ -83,6 +83,23 @@ frontend {{ frontend[1].name }}
 {%- for backend in salt['pillar.get']('haproxy:backends', {}).iteritems() %}
 backend {{ backend[1].name }}
     balance {{ backend[1].balance }}
+    {%- if 'options' in backend[1] %}
+    {%- for option in backend[1].options %}
+    option {{ option }}
+    {%- endfor %}
+    {%- endif %}
+    {%- if 'cookie' in backend[1] %}
+    cookie {{ backend[1].cookie }}
+    {%- endif %}
+    {%- if 'stats' in backend[1] %}
+    {%- for option, value in backend[1].stats.iteritems() %}
+    {%- if option == 'enable' and value %}
+    stats enable
+    {%- else %}
+    stats {{ option }} {{ value }}
+    {%- endif %}
+    {%- endfor %}
+    {%- endif %}
     {%- if 'servers' in backend[1] %}
     {%- for server in backend[1].servers.iteritems() %}
     server {{ server[1].name }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}{% endfor %}

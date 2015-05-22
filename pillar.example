@@ -74,11 +74,23 @@ haproxy:
         server1:
           name: server1-its-name
           host: 192.168.1.213
+          port: 80
           check: check
     backend2:
       name: static
       balance: roundrobin
       redirect: scheme https if !{ ssl_fc }
+      options:
+        - http-server-close
+        - httpclose
+        - forwardfor    except 127.0.0.0/8
+        - httplog
+      cookie: "pm insert indirect"
+      stats:
+        enable: True
+        uri: /url/to/stats
+        realm: LoadBalancer
+        auth: "user:password"
       servers:
         server1:
           name: some-server

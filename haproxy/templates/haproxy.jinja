@@ -5,6 +5,16 @@
 # This file is managed by Salt.
 # Any changes will be overwritten.
 
+{% macro render_server(server) -%}
+server {{ server.name }} {{ server.host }}:{{ server.port }} {{ server.check }} 
+{%- for parameter, value in server.iteritems() -%}
+{%- if parameter != 'name' and 
+    parameter != 'host' and 
+    parameter != 'port' and 
+    parameter != 'check' %} {{ parameter }} {{ value }}
+{%- endif -%}
+{%- endfor -%}
+{%- endmacro -%}
 
 #---------------------------------------------------------------------
 # Global settings
@@ -102,7 +112,8 @@ backend {{ backend[1].name }}
     {%- endif %}
     {%- if 'servers' in backend[1] %}
     {%- for server in backend[1].servers.iteritems() %}
-    server {{ server[1].name }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}{% endfor %}
-    {% endif %}
-    {% endfor %}
+    {{ render_server(server[1]) }}
+    {%- endfor %}
+    {%- endif %}
+{% endfor %}
 {% endif %}

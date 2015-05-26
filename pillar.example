@@ -96,3 +96,6 @@ haproxy:
           host: 123.156.189.111
           port: 8080
           check: check
+          weight: 100
+          maxconn: 1000
+

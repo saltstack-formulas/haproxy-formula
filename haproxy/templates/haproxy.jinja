@@ -27,10 +27,20 @@ global
 
   {%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {}).iteritems() %}
 userlist {{ id }}
-  {%- for entry in userlist.iteritems() %}
-  {{ entry }}
+  {%- for id, entry in userlist.iteritems() %}
+  {%- if id == "groups" %}
+    {%- for group in entry.iteritems() %}
+    group {{ group[0] }} {{ group[1] }}
+    {%- endfor %}
+  {% endif %}
+  {%- if id == "users" %}
+    {%- for user in entry.iteritems() %}
+    user {{ user[0] }} {{ user[1] }}
+    {%- endfor %}
+  {% endif %}
   {%- endfor %}
   {% endfor %}
+
 
 
 #---------------------------------------------------------------------

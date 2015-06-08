@@ -25,6 +25,14 @@ global
     stats socket {{ salt['pillar.get']('haproxy:global:stats:socketpath', '/tmp/ha_stats.sock') }}
 {% endif %}
 
+  {%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {}).iteritems() %}
+userlist {{ id }}
+  {%- for entry in userlist.iteritems() %}
+  {{ entry }}
+  {%- endfor %}
+  {% endfor %}
+
+
 #---------------------------------------------------------------------
 # common defaults that all the 'listen' and 'backend' sections will
 # use if not designated in their block

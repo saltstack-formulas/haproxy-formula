@@ -1,12 +1,19 @@
 haproxy.service:
+{% if salt['pillar.get']('haproxy:enable', True) %}
   service.running:
     - name: haproxy
     - enable: True
     - reload: True
     - require:
       - pkg: haproxy
+        file: haproxy.service
     - watch:
       - file: haproxy.config
+{% else %}
+  service.dead:
+    - name: haproxy
+    - enable: False
+{% endif %}
   file.replace:
     - name: /etc/default/haproxy
 {% if salt['pillar.get']('haproxy:enabled', True) %}

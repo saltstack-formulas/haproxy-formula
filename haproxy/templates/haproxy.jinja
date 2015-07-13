@@ -33,6 +33,7 @@ defaults
     log {{ salt['pillar.get']('haproxy:defaults:log') }}
     mode {{ salt['pillar.get']('haproxy:defaults:mode') }}
     retries {{ salt['pillar.get']('haproxy:defaults:retries') }}
+    balance {{ salt['pillar.get']('haproxy:defaults:balance', 'roundrobin') }}
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for option in salt['pillar.get']('haproxy:defaults:options') %}
     option {{ option }}
@@ -94,7 +95,9 @@ backend {{ backend[1].name }}
     {%- for redirect in backend[1].redirects %} # Redirect loop start
 redirect {{ redirect }}{% endfor %}
   {%- endif %}
+  {%- if 'balance' in backend[1] %}
     balance {{ backend[1].balance }}
+  {%- endif %}
   {%- if 'options' in backend[1] %}
     {%- for option in backend[1].options %}
     option {{ option }}

@@ -7,11 +7,13 @@ haproxy.service:
       - pkg: haproxy
     - watch:
       - file: haproxy.config
-  file.managed:
+  file.replace:
     - name: /etc/default/haproxy
-#TODO: Add switch to turn the service on and off based on pillar configuration.
-    - source: salt://haproxy/files/haproxy-init-enable
-    - create: True
-    - user: "root"
-    - group: "root"
-    - mode: "0644"
+{% if salt['pillar.get']('haproxy:enabled', True) %}
+    - pattern: ENABLED=0$
+    - repl: ENABLED=1
+{% else %}
+    - pattern: ENABLED=1$
+    - repl: ENABLED=0
+{% endif %}
+    - show_changes: True

@@ -5,7 +5,6 @@
 # This file is managed by Salt.
 # Any changes will be overwritten.
 
-
 #------------------
 # Global settings
 #------------------
@@ -49,7 +48,6 @@ defaults
     errorfile {{ errorfile[0] }} {{ errorfile[1] }}
   {%- endfor %}
 {% endif %}
-
 
 #------------------
 # listen instances
@@ -168,7 +166,6 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     {% endif %}
   {%- endfor %}
 {% endif %}
-
 
 #------------------
 # backend instances

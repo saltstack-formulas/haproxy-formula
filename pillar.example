@@ -53,8 +53,7 @@ haproxy:
         - "X-Forwarded-Proto:\\ http"
       default_backend: www-backend
 
-    frontend2:
-      name: www-https
+    www-https:
       bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
       reqadd:
         - "X-Forwarded-Proto:\\ https"
@@ -63,7 +62,12 @@ haproxy:
         - url_static       path_beg       -i /static /images /javascript /stylesheets
         - url_static       path_end       -i .jpg .gif .png .css .js
       use_backends:
-        - static  if url_static
+        - static-backend  if url_static
+    some-services:
+      bind:
+        - "*:8080"
+        - "*:8088"
+      default_backend: api-backend
 
   backends:
     backend1:
@@ -76,8 +80,7 @@ haproxy:
           host: 192.168.1.213
           port: 80
           check: check
-    backend2:
-      name: static
+    static-backend:
       balance: roundrobin
       redirect: scheme https if !{ ssl_fc }
       options:
@@ -92,8 +95,21 @@ haproxy:
         realm: LoadBalancer
         auth: "user:password"
       servers:
-        server1:
-          name: some-server
+        some-server:
           host: 123.156.189.111
           port: 8080
+          check: check
+    api-backend:
+      options:
+        - http-server-close
+        - forwardfor
+      servers:
+        apiserver1:
+          host: apiserver1.example.com
+          port: 80
+          check: check
+        server2:
+          name: apiserver2
+          host: apiserver2.example.com
+          port: 80
           check: check

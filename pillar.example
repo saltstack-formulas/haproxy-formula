@@ -59,6 +59,11 @@ haproxy:
       options:
         - forwardfor
         - http-server-close
+      defaultserver:
+        slowstart: 60s
+        maxconn: 256
+        maxqueue: 128
+        weight: 100
       servers:
         web1:
           host: web1.example.com

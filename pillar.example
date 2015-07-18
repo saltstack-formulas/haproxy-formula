@@ -44,6 +44,31 @@ haproxy:
       503: /etc/haproxy/errors/503.http
       504: /etc/haproxy/errors/504.http
 
+  listens:
+    stats:
+      bind:
+        - "0.0.0.0:8998"
+      mode: http
+      stats:
+        enable: True
+        uri: "/admin?stats"
+        refresh: "20s"
+    myservice:
+      bind:
+        - "*:8888"
+      options:
+        - forwardfor
+        - http-server-close
+      servers:
+        web1:
+          host: web1.example.com
+          port: 80
+          check: check
+        web2:
+          host: web2.example.com
+          port: 18888
+          check: check
+
   frontends:
     frontend1:
       name: www-http

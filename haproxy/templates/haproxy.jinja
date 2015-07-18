@@ -51,7 +51,67 @@ defaults
 {% endif %}
 
 
-
+#---------------------------------------------------------------------
+# listen instances
+#---------------------------------------------------------------------
+{%- if 'listens' in salt['pillar.get']('haproxy', {}) %}
+  {%- for listener in salt['pillar.get']('haproxy:listens', {}).iteritems() %}
+listen {{ listener[1].get(name, listener[0]) }}
+    {%- if 'bind' in listener[1] %}
+      {%- for socket in listener[1].bind %}
+    bind {{ socket }}
+      {%- endfor %}
+    {%- endif %}
+    {%- if 'redirects' in listener[1] %}
+      {%- for front_redirect in listener[1].redirects %}
+    redirect {{ front_redirect }}
+      {% endfor %}
+    {%- endif %}
+    {%- if 'acls' in listener[1] %}
+      {%- for acl in listener[1].acls %}
+    acl {{ acl }}
+      {%- endfor %}
+    {%- endif %}
+    {%- if 'reqadd' in listener[1] %}
+      {%- for reqadd in listener[1].reqadd %}
+    reqadd {{ reqadd }}
+      {%- endfor %}
+    {%- endif %}
+    {%-if 'default_backend' in listener[1] -%}
+    default_backend {{ listener[1].default_backend }}
+    {%- endif %}
+    {%-if 'use_backends' in listener[1] -%}
+      {%- for use_backend in listener[1].use_backends %}
+    use_backend {{ use_backend }}
+      {% endfor %}
+    {%- endif %}
+    {%- if 'balance' in listener[1] %}
+    balance {{ listener[1].balance }}
+    {%- endif %}
+    {%- if 'options' in listener[1] %}
+      {%- for option in listener[1].options %}
+    option {{ option }}
+      {%- endfor %}
+    {%- endif %}
+    {%- if 'cookie' in listener[1] %}
+    cookie {{ listener[1].cookie }}
+    {%- endif %}
+    {%- if 'stats' in listener[1] %}
+      {%- for option, value in listener[1].stats.iteritems() %}
+        {%- if option == 'enable' and value %}
+    stats enable
+        {%- else %}
+    stats {{ option }} {{ value }}
+        {%- endif %}
+      {%- endfor %}
+    {%- endif %}
+    {%- if 'servers' in listener[1] %}
+      {%- for server in listener[1].servers.iteritems() %}
+    server {{ server[1].get(name,server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
 
 #---------------------------------------------------------------------
 # frontend instances
@@ -59,7 +119,11 @@ defaults
 {%- if 'frontends' in salt['pillar.get']('haproxy', {}) %}
   {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
 frontend {{ frontend[1].get(name, frontend[0]) }}
-    bind {{ frontend[1].bind }}
+    {%- if 'bind' in frontend[1] %}
+      {%- for socket in frontend[1].bind %}
+    bind {{ socket }}
+      {%- endfor %}
+    {%- endif %}
     {%- if 'redirects' in frontend[1] %}
       {%- for front_redirect in frontend[1].redirects %}
 redirect {{ front_redirect }}

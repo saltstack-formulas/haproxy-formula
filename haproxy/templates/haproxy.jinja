@@ -104,7 +104,9 @@ listen {{ listener[1].get(name, listener[0]) }}
     stats {{ option }} {{ value }}
         {%- endif %}
       {%- endfor %}
-    {%- endif %}
+    {f 'defaultserver' in listener[1] %}
+    default-server {% for option, value in listener[1].defaultserver.iteritems() -%} {{ ' '.join((option,value|string)) }} {%- endfor %}
+    {% endif %}%- endif %}
     {%- if 'servers' in listener[1] %}
       {%- for server in listener[1].servers.iteritems() %}
     server {{ server[1].get(name,server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}
@@ -179,6 +181,9 @@ redirect {{ redirect }}{% endfor %}
       {%- endif %}
     {%- endfor %}
   {%- endif %}
+    {f 'defaultserver' in listener[1] %}
+    default-server {% for option, value in listener[1].defaultserver.iteritems() -%} {{ ' '.join((option,value|string)) }} {%- endfor %}
+    {% endif %}%- endif %}
   {%- if 'servers' in backend[1] %}
     {%- for server in backend[1].servers.iteritems() %}
     server {{ server[1].get(name,server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}{% endfor %}

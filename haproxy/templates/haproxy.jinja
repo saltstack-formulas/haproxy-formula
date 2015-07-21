@@ -6,9 +6,9 @@
 # Any changes will be overwritten.
 
 
-#---------------------------------------------------------------------
+#------------------
 # Global settings
-#---------------------------------------------------------------------
+#------------------
 global
     log /dev/log    local0
     log /dev/log    local1 notice
@@ -16,8 +16,8 @@ global
     group {{ salt['pillar.get']('haproxy:global:group', 'haproxy') }}
 {%- if salt['pillar.get']('haproxy:global:chroot:enable', 'no') == True %}
     chroot  {{ salt['pillar.get']('haproxy:global:chroot:path', '/tmp') }}
-{%- endif -%}
-{% if salt['pillar.get']('haproxy:global:daemon', 'no') == True %}
+{% endif %}
+{%- if salt['pillar.get']('haproxy:global:daemon', 'no') == True %}
     daemon
 {% endif %}
 {%- if salt['pillar.get']('haproxy:global:stats:enable', 'no') == True %}
@@ -25,10 +25,10 @@ global
     stats socket {{ salt['pillar.get']('haproxy:global:stats:socketpath', '/tmp/ha_stats.sock') }}
 {% endif %}
 
-#---------------------------------------------------------------------
+#------------------
 # common defaults that all the 'listen' and 'backend' sections will
-# use if not designated in their block
-#---------------------------------------------------------------------
+# use- if not designated in their block
+#------------------
 defaults
     log {{ salt['pillar.get']('haproxy:defaults:log') }}
     mode {{ salt['pillar.get']('haproxy:defaults:mode') }}
@@ -51,21 +51,27 @@ defaults
 {% endif %}
 
 
-#---------------------------------------------------------------------
+#------------------
 # listen instances
-#---------------------------------------------------------------------
+#------------------
 {%- if 'listens' in salt['pillar.get']('haproxy', {}) %}
   {%- for listener in salt['pillar.get']('haproxy:listens', {}).iteritems() %}
-listen {{ listener[1].get(name, listener[0]) }}
+listen {{ listener[1].get('name', listener[0]) }}
     {%- if 'bind' in listener[1] %}
-      {%- for socket in listener[1].bind %}
+      {%- if listener[1].bind[1] is defined and listener[1].bind[1]|length > 1 %}
+        {%- for socket in listener[1].bind %}
     bind {{ socket }}
-      {%- endfor %}
+        {%- endfor %}
+      {%- elif listener[1].bind[0]|length > 1 %}
+    bind {{ listener[1].bind[0] }}
+      {%- else %}
+    bind {{ listener[1].bind }}
+      {%- endif %}
     {%- endif %}
     {%- if 'redirects' in listener[1] %}
       {%- for front_redirect in listener[1].redirects %}
     redirect {{ front_redirect }}
-      {% endfor %}
+      {%- endfor %}
     {%- endif %}
     {%- if 'acls' in listener[1] %}
       {%- for acl in listener[1].acls %}
@@ -77,116 +83,131 @@ listen {{ listener[1].get(name, listener[0]) }}
     reqadd {{ reqadd }}
       {%- endfor %}
     {%- endif %}
-    {%-if 'default_backend' in listener[1] -%}
+    {%- if 'default_backend' in listener[1] %}
     default_backend {{ listener[1].default_backend }}
-    {%- endif %}
-    {%-if 'use_backends' in listener[1] -%}
-      {%- for use_backend in listener[1].use_backends %}
+    {% endif %}
+    {%- if 'use_backends' in listener[1] %}
+      {%- for use_backend in listener[1].use_backendsi %}
     use_backend {{ use_backend }}
-      {% endfor %}
-    {%- endif %}
+      {%- endfor %}
+    {% endif %}
     {%- if 'balance' in listener[1] %}
     balance {{ listener[1].balance }}
-    {%- endif %}
+    {% endif %}
     {%- if 'options' in listener[1] %}
       {%- for option in listener[1].options %}
     option {{ option }}
       {%- endfor %}
-    {%- endif %}
+    {% endif %}
     {%- if 'cookie' in listener[1] %}
     cookie {{ listener[1].cookie }}
-    {%- endif %}
+    {% endif %}
     {%- if 'stats' in listener[1] %}
       {%- for option, value in listener[1].stats.iteritems() %}
         {%- if option == 'enable' and value %}
     stats enable
-        {%- else %}
+        {% else %}
     stats {{ option }} {{ value }}
-        {%- endif %}
+        {% endif %}
       {%- endfor %}
-    {f 'defaultserver' in listener[1] %}
-    default-server {% for option, value in listener[1].defaultserver.iteritems() -%} {{ ' '.join((option,value|string)) }} {%- endfor %}
-    {% endif %}%- endif %}
+    {% endif %}
+    {%- if 'appsession' in listener[1] %}
+    appsession {%- for option in listener[1].appsession %}  {{ option }}  {%- endfor %}
+    {% endif %}
+    {%- if 'defaultserver' in listener[1] %}
+    default-server {%- for option, value in listener[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+    {% endif %}
     {%- if 'servers' in listener[1] %}
       {%- for server in listener[1].servers.iteritems() %}
-    server {{ server[1].get(name,server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}
-      {% endfor %}
+    server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}
+      {%- endfor %}
     {% endif %}
-  {% endfor %}
+  {%- endfor %}
 {% endif %}
 
-#---------------------------------------------------------------------
+
+#------------------
 # frontend instances
-#---------------------------------------------------------------------
+#------------------
 {%- if 'frontends' in salt['pillar.get']('haproxy', {}) %}
   {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
-frontend {{ frontend[1].get(name, frontend[0]) }}
+frontend {{ frontend[1].get('name', frontend[0]) }}
     {%- if 'bind' in frontend[1] %}
-      {%- for socket in frontend[1].bind %}
+      {%- if frontend[1].bind[1] is defined and frontend[1].bind[1]|length > 1 %}
+        {%- for socket in frontend[1].bind %}
     bind {{ socket }}
-      {%- endfor %}
+        {%- endfor %}
+      {%- elif frontend[1].bind[0]|length > 1 %}
+    bind {{ frontend[1].bind[0] }}
+      {%- else %}
+    bind {{ frontend[1].bind }}
+      {%- endif %}
     {%- endif %}
     {%- if 'redirects' in frontend[1] %}
       {%- for front_redirect in frontend[1].redirects %}
-redirect {{ front_redirect }}
-      {% endfor %}
-    {%- endif %}
+    redirect {{ front_redirect }}
+      {%- endfor %}
+    {% endif %}
     {%- if 'acls' in frontend[1] %}
       {%- for acl in frontend[1].acls %}
     acl {{ acl }}
       {%- endfor %}
-    {%- endif %}
+    {% endif %}
     {%- if 'reqadd' in frontend[1] %}
       {%- for reqadd in frontend[1].reqadd %}
     reqadd {{ reqadd }}
       {%- endfor %}
-    {%- endif %}
+    {% endif %}
+    {%- if 'default_backend' in frontend[1] %}
     default_backend {{ frontend[1].default_backend }}
-    {%-if 'use_backends' in frontend[1] -%}
+    {% endif %}
+    {%- if 'use_backends' in frontend[1] %}
       {%- for use_backend in frontend[1].use_backends %}
     use_backend {{ use_backend }}
-      {% endfor %}
-    {%- endif %}
-  {% endfor %}
-{%- endif %}
+      {%- endfor %}
+    {% endif %}
+  {%- endfor %}
+{% endif %}
 
 
-#---------------------------------------------------------------------
+#------------------
 # backend instances
-#---------------------------------------------------------------------
+#------------------
 {%- if 'backends' in salt['pillar.get']('haproxy', {}) %}
-  {%- for backend in salt['pillar.get']('haproxy:backends', {}).iteritems() %} # Backend loop start
-backend {{ backend[1].get(name, backend[0]) }}
-  {%- if 'redirects' in backend[1] %}
-    {%- for redirect in backend[1].redirects %} # Redirect loop start
-redirect {{ redirect }}{% endfor %}
-  {%- endif %}
-  {%- if 'balance' in backend[1] %}
+  {%- for backend in salt['pillar.get']('haproxy:backends', {}).iteritems() %}
+backend {{ backend[1].get('name',backend[0]) }}
+    {%- if 'redirects' in backend[1] %}
+      {%- for redirect in backend[1].redirects %}
+    redirect {{ redirect }}
+      {%- endfor %}
+    {% endif %}
+    {%- if 'balance' in backend[1] %}
     balance {{ backend[1].balance }}
-  {%- endif %}
-  {%- if 'options' in backend[1] %}
-    {%- for option in backend[1].options %}
+    {% endif %}
+    {%- if 'options' in backend[1] %}
+      {%- for option in backend[1].options %}
     option {{ option }}
-    {%- endfor %}
-  {%- endif %}
-  {%- if 'cookie' in backend[1] %}
+      {%- endfor %}
+    {% endif %}
+    {%- if 'cookie' in backend[1] %}
     cookie {{ backend[1].cookie }}
-  {%- endif %}
-  {%- if 'stats' in backend[1] %}
-    {%- for option, value in backend[1].stats.iteritems() %}
-      {%- if option == 'enable' and value %}
+    {% endif %}
+    {%- if 'stats' in backend[1] %}
+      {%- for option, value in backend[1].stats.iteritems() %}
+        {%- if option == 'enable' and value %}
     stats enable
-      {%- else %}
+        {% else %}
     stats {{ option }} {{ value }}
-      {%- endif %}
-    {%- endfor %}
-  {%- endif %}
-    {f 'defaultserver' in listener[1] %}
-    default-server {% for option, value in listener[1].defaultserver.iteritems() -%} {{ ' '.join((option,value|string)) }} {%- endfor %}
-    {% endif %}%- endif %}
-  {%- if 'servers' in backend[1] %}
-    {%- for server in backend[1].servers.iteritems() %}
-    server {{ server[1].get(name,server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}{% endfor %}
-  {% endif %}
-  {% endfor %} # Backend loop end
+        {% endif %}
+      {%- endfor %}
+    {% endif %}
+    {%- if 'defaultserver' in backend[1] %}
+    default-server {%- for option, value in backend[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+    {% endif %}
+    {%- if 'servers' in backend[1] %}
+      {%- for server in backend[1].servers.iteritems() %}
+    server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}
+      {%- endfor %}
+    {% endif %}
+  {%- endfor %}
 {% endif %}

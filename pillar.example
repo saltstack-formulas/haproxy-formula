@@ -3,6 +3,7 @@
 #
 
 haproxy:
+  enabled: True
   config_file_path: /etc/haproxy/haproxy.cfg
   global:
     stats:

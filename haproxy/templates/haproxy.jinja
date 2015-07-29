@@ -24,7 +24,12 @@ global
     # Stats support is currently limited to socket mode
     stats socket {{ salt['pillar.get']('haproxy:global:stats:socketpath', '/tmp/ha_stats.sock') }}
 {%- endif %}
-
+{%- if salt['pillar.get']('haproxy:global:ssl-default-bind-ciphers', False) %}
+    ssl-default-bind-ciphers {{ salt['pillar.get']('haproxy:global:ssl-default-bind-ciphers') }}
+{%- endif %}
+{%- if salt['pillar.get']('haproxy:global:ssl-default-bind-options', False) %}
+    ssl-default-bind-options {{ salt['pillar.get']('haproxy:global:ssl-default-bind-options') }}
+{%- endif %}
 
 #------------------
 # common defaults that all the 'listen' and 'backend' sections will

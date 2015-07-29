@@ -9,6 +9,8 @@ haproxy:
     stats:
       enable: True
       socketpath: /var/lib/haproxy/stats
+    ssl-default-bind-ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384"
+    ssl-default-bind-options: "no-sslv3 no-tlsv10 no-tlsv11"
 
     user: haproxy
     group: haproxy

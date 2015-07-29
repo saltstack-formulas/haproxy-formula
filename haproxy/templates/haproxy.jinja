@@ -36,9 +36,9 @@ global
 # use- if not designated in their block
 #------------------
 defaults
-    log {{ salt['pillar.get']('haproxy:defaults:log') }}
-    mode {{ salt['pillar.get']('haproxy:defaults:mode') }}
-    retries {{ salt['pillar.get']('haproxy:defaults:retries') }}
+    log {{ salt['pillar.get']('haproxy:defaults:log', 'global')}}
+    mode {{ salt['pillar.get']('haproxy:defaults:mode', 'http') }}
+    retries {{ salt['pillar.get']('haproxy:defaults:retries', '3') }}
     balance {{ salt['pillar.get']('haproxy:defaults:balance', 'roundrobin') }}
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for option in salt['pillar.get']('haproxy:defaults:options') %}
@@ -49,7 +49,11 @@ defaults
   {%- for timeout in salt['pillar.get']('haproxy:defaults:timeouts') %}
     timeout {{ timeout }}
   {%- endfor %}
-{% endif %}
+{%- else %}
+    timeout client 1m
+    timeout connect 10s
+    timeout server 1m
+{%- endif %}
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').iteritems() %}
     errorfile {{ errorfile[0] }} {{ errorfile[1] }}

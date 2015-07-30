@@ -99,7 +99,7 @@ redirect {{ front_redirect }}
 # frontend http-requests
     {%- if 'http_requests' in frontend[1] %}
       {%- for http_request in frontend[1].http_requests %}
-http-request {{ http_request }}
+    http-request {{ http_request }}
       {% endfor %}
     {%- endif %}
 

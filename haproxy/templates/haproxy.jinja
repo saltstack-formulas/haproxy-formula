@@ -85,7 +85,7 @@ frontend {{ frontend[1].name }}
 # frontend redirects
     {%- if 'redirects' in frontend[1] %}
       {%- for front_redirect in frontend[1].redirects %}
-redirect {{ front_redirect }}
+    redirect {{ front_redirect }}
       {% endfor %}
     {%- endif %}
 

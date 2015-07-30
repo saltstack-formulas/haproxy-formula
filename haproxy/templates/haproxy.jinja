@@ -51,16 +51,19 @@ defaults
     log {{ salt['pillar.get']('haproxy:defaults:log') }}
     mode {{ salt['pillar.get']('haproxy:defaults:mode') }}
     retries {{ salt['pillar.get']('haproxy:defaults:retries') }}
+# options
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for option in salt['pillar.get']('haproxy:defaults:options') %}
     option {{ option }}
   {%- endfor %}
 {% endif %}
+# timeouts
 {%- if 'timeouts' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for timeout in salt['pillar.get']('haproxy:defaults:timeouts') %}
     timeout {{ timeout }}
   {%- endfor %}
 {% endif %}
+# errorfiles
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').iteritems() %}
     errorfile {{ errorfile[0] }} {{ errorfile[1] }}
@@ -77,21 +80,32 @@ defaults
   {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
 frontend {{ frontend[1].name }}
     bind {{ frontend[1].bind }}
+# frontend redirects
     {%- if 'redirects' in frontend[1] %}
       {%- for front_redirect in frontend[1].redirects %}
 redirect {{ front_redirect }}
       {% endfor %}
     {%- endif %}
+# frontend acls
     {%- if 'acls' in frontend[1] %}
       {%- for acl in frontend[1].acls %}
     acl {{ acl }}
       {%- endfor %}
     {%- endif %}
+# frontend http-requests
+    {%- if 'http_requests' in frontend[1] %}
+      {%- for http_request in frontend[1].http_requests %}
+http-request {{ http_request }}
+      {% endfor %}
+    {%- endif %}
+
+# frontend reqadds
     {%- if 'reqadd' in frontend[1] %}
       {%- for reqadd in frontend[1].reqadd %}
     reqadd {{ reqadd }}
       {%- endfor %}
     {%- endif %}
+# backend targets
     default_backend {{ frontend[1].default_backend }}
     {%-if 'use_backends' in frontend[1] -%}
       {%- for use_backend in frontend[1].use_backends %}
@@ -111,6 +125,16 @@ backend {{ backend[1].name }}
   {%- if 'redirects' in backend[1] %}
     {%- for redirect in backend[1].redirects %} # Redirect loop start
 redirect {{ redirect }}{% endfor %}
+  {%- endif %}
+  {%- if 'http_requests' in backend[1] %}
+    {%- for http_request in backend[1].http_requests %}
+http-request {{ http_request }}
+    {% endfor %}
+  {%- endif %}
+  {%- if 'acls' in backend[1] %}
+    {%- for acl in backend[1].acls %}
+  acl {{ acl }}
+    {%- endfor %}
   {%- endif %}
     balance {{ backend[1].balance }}
   {%- if 'options' in backend[1] %}

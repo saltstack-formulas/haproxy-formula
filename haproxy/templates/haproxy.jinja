@@ -50,6 +50,21 @@ defaults
     errorfile {{ errorfile[0] }} {{ errorfile[1] }}
   {%- endfor %}
 {%- endif %}
+{%- if salt['pillar.get']('haproxy:resolvers') %}
+
+
+#------------------
+# DNS resolvers
+#------------------
+{%- for resolver in salt['pillar.get']('haproxy:resolvers', {}).iteritems() %}
+resolvers {{ resolver[0] }}
+  {%- if 'options' in resolver[1] %}
+      {%- for option in resolver[1].options %}
+    {{ option }}
+      {%- endfor %}
+  {%- endif %}
+{%- endfor %}
+{%- endif %}
 {%- if 'listens' in salt['pillar.get']('haproxy', {}) %}
 
 
@@ -144,6 +159,11 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     bind {{ frontend[1].bind }}
       {%- endif %}
     {%- endif %}
+    {%- if 'options' in frontend[1] %}
+      {%- for option in frontend[1].options %}
+    {{ option }}
+      {%- endfor %}
+    {%- endif -%}
     {%- if 'redirects' in frontend[1] %}
       {%- for front_redirect in frontend[1].redirects %}
     redirect {{ front_redirect }}
@@ -207,7 +227,7 @@ backend {{ backend[1].get('name',backend[0]) }}
     {%- endif %}
     {%- if 'servers' in backend[1] %}
       {%- for server in backend[1].servers.iteritems() %}
-    server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }}
+    server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
       {%- endfor %}
     {% endif %}
   {%- endfor %}

@@ -47,11 +47,11 @@ global
     ssl-default-bind-ciphers {{ salt['pillar.get']('haproxy:global:ssl-default-bind-ciphers') }}
 {%- endif %}
 {%- if 'ssl-default-bind-options' in salt['pillar.get']('haproxy:global', {}) %}
-  {%- if salt['pillar.get']('ssl-default-bind-options') is string or salt['pillar.get']('haproxy:global:ssl-default-bind-options') is number %}
-    ssl-default-bind-options {{ salt['pillar.get']('haproxy:global:ssldefaultbindoptions') }}
+  {%- if salt['pillar.get']('haproxy:global:ssl-default-bind-options') is string or salt['pillar.get']('haproxy:global:ssl-default-bind-options') is number %}
+    ssl-default-bind-options {{ salt['pillar.get']('haproxy:global:ssl-default-bind-options') }}
   {%- else %}
-    {%- for ssl-default-bind-option in salt['pillar.get']('haproxy:global:ssl-default-bind-opitions').iteritems() %}
-    ssl-default-bind-options {{ ssl-default-dind-option }}
+    {%- for option in salt['pillar.get']('haproxy:global:ssl-default-bind-options').items() %}
+    ssl-default-bind-options {{ option }}
     {%- endfor %}
   {%- endif %}
 {% endif %}

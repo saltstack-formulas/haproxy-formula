@@ -5,6 +5,19 @@
 # This file is managed by Salt.
 # Any changes will be overwritten.
 
+{%- macro render_list_of_dictionaries(name, list, indent = '    ', infix = ' ', postfix = '\t') %}
+{%- if list is not iterable or list is string %}
+{{ indent ~ name ~ postfix ~ list }}
+{%- else %}{% for item in list %}
+{%- if item is not iterable or item is string %}
+{{ indent ~ name ~ postfix ~ item }}
+{%- else %}{% for key, value in item.items() %}
+{{- render_list_of_dictionaries(indent ~ name ~ infix ~ key, value, '', infix, postfix) }}
+        {%- endfor %}
+      {%- endif %}
+    {%- endfor %}
+  {%- endif %}
+{%- endmacro %}
 
 #------------------
 # Global settings
@@ -33,28 +46,14 @@ global
     spread-checks {{ salt['pillar.get']('haproxy:global:spreadchecks') }}
 {%- endif %}
 {%- if 'tune' in salt['pillar.get']('haproxy:global', {}) %}
-  {%- for setting, item in salt['pillar.get']('haproxy:global:tune').iteritems() %}
-    {%- if item is number or item is string %}
-    tune.{{setting}} {{item}}
-    {%- else %}
-      {%- for subsetting, value in item.iteritems()  %}
-    tune.{{setting}}.{{subsetting}} {{value}}
-      {%- endfor %}
-    {%- endif %}
-  {%- endfor %}
+    {{- render_list_of_dictionaries('tune', salt['pillar.get']('haproxy:global:tune'), '    ','.') }} 
 {%- endif %}
 {%- if 'ssl-default-bind-ciphers' in salt['pillar.get']('haproxy:global', {}) %}
-    ssl-default-bind-ciphers {{ salt['pillar.get']('haproxy:global:ssl-default-bind-ciphers') }}
+    {{- render_list_of_dictionaries('ssl-default-bind-ciphers', salt['pillar.get']('haproxy:global:ssl-default-bind-ciphers')) }}
 {%- endif %}
 {%- if 'ssl-default-bind-options' in salt['pillar.get']('haproxy:global', {}) %}
-  {%- if salt['pillar.get']('haproxy:global:ssl-default-bind-options') is string or salt['pillar.get']('haproxy:global:ssl-default-bind-options') is number %}
-    ssl-default-bind-options {{ salt['pillar.get']('haproxy:global:ssl-default-bind-options') }}
-  {%- else %}
-    {%- for option in salt['pillar.get']('haproxy:global:ssl-default-bind-options').items() %}
-    ssl-default-bind-options {{ option }}
-    {%- endfor %}
-  {%- endif %}
-{% endif %}
+    {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
+{%- endif %}
 
 #------------------
 # common defaults that all the 'listen' and 'backend' sections will
@@ -65,14 +64,8 @@ defaults
     mode {{ salt['pillar.get']('haproxy:defaults:mode', 'http') }}
     retries {{ salt['pillar.get']('haproxy:defaults:retries', '3') }}
     balance {{ salt['pillar.get']('haproxy:defaults:balance', 'roundrobin') }}
-{%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) %}
-  {%- if salt['pillar.get']('haproxy:defaults:options') is string %}
-    option {{ salt['pillar.get']('haproxy:defaults:options') }}
-  {%- else %}
-    {%- for option in salt['pillar.get']('haproxy:defaults:options') %}
-    option {{ option }}
-    {%- endfor %}
-  {%- endif %}
+{%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) -%}
+    {{- render_list_of_dictionaries('option', salt['pillar.get']('haproxy:defaults:options')) }}
 {%- endif %}
 {%- if 'maxconn' in salt['pillar.get']('haproxy:defaults', {}) %}
     maxconn {{ salt['pillar.get']('haproxy:defaults:maxconn') }}
@@ -85,6 +78,9 @@ defaults
     timeout client  1m
     timeout connect 10s
     timeout server  1m
+{%- endif %}
+{%- if 'stats' in salt['pillar.get']('haproxy:defaults', {}) -%}
+    {{ render_list_of_dictionaries('stats', salt['pillar.get']('haproxy:defaults:stats')) }} 
 {%- endif %}
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').iteritems() %}
@@ -216,7 +212,7 @@ listen {{ listener[1].get('name', listener[0]) }}
       {%- if listener[1].use_backends is string %}
     use_backend {{ listener[1].use_backends }}
       {%- else %}
-        {%- for use_backend in listener[1].use_backendsi %}
+        {%- for use_backend in listener[1].use_backends %}
     use_backend {{ use_backend }}
         {%- endfor %}
       {%- endif %}
@@ -273,13 +269,7 @@ listen {{ listener[1].get('name', listener[0]) }}
   {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
 frontend {{ frontend[1].get('name', frontend[0]) }}
     {%- if 'bind' in frontend[1] %}
-      {%- if frontend[1].bind is string %}
-    bind {{ frontend[1].bind }}
-      {%- else %}
-        {%- for socket in frontend[1].bind %}
-    bind {{ socket }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('bind', frontend[1].bind) }}
     {%- endif %}
     {%- if 'log' in frontend[1] %}
     log {{ frontend[1].log }}
@@ -291,13 +281,7 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     maxconn {{ frontend[1].maxconn }}
     {%- endif %}
     {%- if 'options' in frontend[1] %}
-      {%- if frontend[1].options is string %}
-    option {{ frontend[1].options }}
-      {%- else %}
-        {%- for option in frontend[1].options %}
-    option {{ option }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('options', frontend[1].options) }}
     {%- endif %}
     {%- if 'uniqueidformat' in frontend[1] %}
     unique-id-format {{ frontend[1].uniqueidformat }}
@@ -309,88 +293,34 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     stick-table {{ frontend[1].sticktable }}
     {%- endif %}
     {%- if 'captures' in frontend[1] %}
-      {%- if frontend[1].captures is string %}
-    capture {{ frontend[1].captures }}
-      {%- else %}
-        {%- for capture in frontend[1].captures %}
-    capture {{ capture }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('capture', frontend[1].captures) }}
     {%- endif %}
     {%- if 'acls' in frontend[1] %}
-      {%- if frontend[1].acls is string %}
-    acl {{ frontend[1].acls }}
-      {%- else %}
-        {%- for acl in frontend[1].acls %}
-    acl {{ acl }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('acl', frontend[1].acls) }}
     {%- endif %}
     {%- if 'tcprequests' in frontend[1] %}
-      {%- if frontend[1].tcprequests is string %}
-    tcp-request {{ frontend[1].tcprequests }}
-      {%- else %}
-        {%- for tcprequest in frontend[1].tcprequests %}
-    tcp-request {{ tcprequest }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('tcp-request', frontend[1].tcprequests) }}
     {%- endif %}
     {%- if 'tcpresponses' in frontend[1] %}
-      {%- if frontend[1].tcpresponses is string %}
-    tcp-response {{ frontend[1].tcpresponses }}
-      {%- else %}
-        {%- for tcpresponse in frontend[1].tcpresponses %}
-    tcp-response {{ tcpresponse }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('tcp-response', frontend[1].tcpresponses) }}
     {%- endif %}
     {%- if 'httprequests' in frontend[1] %}
-      {%- if frontend[1].httprequests is string %}
-    http-request {{ frontend[1].httprequests }}
-      {%- else %}
-        {%- for httprequest in frontend[1].httprequests %}
-    http-request {{ httprequest }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('http-request', frontend[1].httprequests) }}
     {%- endif %}
     {%- if 'reqadds' in frontend[1] %}
-      {%- if frontend[1].reqadds is string %}
-    reqadd {{ frontend[1].reqadds }}
-      {%- else %}
-        {%- for reqadd in frontend[1].reqadds %}
-    reqadd {{ reqadd }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('reqadd', frontend[1].reqadds) }}
     {%- endif %}
     {%- if 'redirects' in frontend[1] %}
-      {%- if frontend[1].redirects is string %}
-    redirect {{ frontend[1].redirects }}
-      {%- else %}
-        {%- for redirect in frontend[1].redirects %}
-    redirect {{ redirect }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('redirect', frontend[1].redirects) }}
     {%- endif %}
     {%- if 'stickons' in frontend[1] %}
-      {%- if frontend[1].stickons is string %}
-    stick on {{ frontend[1].stickons }}
-      {%- else %}
-        {%- for stickon in frontend[1].stickons %}
-    stick on {{ stickon }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('stickon', frontend[1].stickons) }}
     {%- endif %}
     {%- if 'default_backend' in frontend[1] %}
     default_backend {{ frontend[1].default_backend }}
     {%- endif %}
     {%- if 'use_backends' in frontend[1] %}
-      {%- if frontend[1].use_backends is string %}
-    use_backend {{ frontend[1].use_backends }}
-      {%- else %}
-        {%- for use_backend in frontend[1].use_backends %}
-    use_backend {{ use_backend }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('use_backend', frontend[1].use_backends) }}
     {%- endif %}
   {% endfor %}
 {% endif %}
@@ -420,13 +350,7 @@ backend {{ backend[1].get('name',backend[0]) }}
     stick-table {{ backend[1].sticktable }}
     {%- endif %}
     {%- if 'acls' in backend[1] %}
-      {%- if backend[1].acls is string %}
-    acl {{ backend[1].acls }}
-      {%- else %}
-        {%- for acl in backend[1].acls %}
-    acl {{ acl }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('acl', backend[1].acls) }}
     {%- endif %}
     {%- if 'tcprequests' in backend[1] %}
       {%- if backend[1].tcprequests is string %}
@@ -491,6 +415,9 @@ backend {{ backend[1].get('name',backend[0]) }}
       {%- else %}
     appsession {%- for option in backend[1].appsession %}  {{ option }}  {%- endfor %}
       {%- endif %}
+    {%- endif %}
+    {%- if 'reqreps' in backend[1] %}
+    {{- render_list_of_dictionaries('reqrep', backend[1].reqreps) }}
     {%- endif %}
     {%- if 'defaultserver' in backend[1] %}
     default-server {%- for option, value in backend[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}

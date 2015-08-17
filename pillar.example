@@ -37,6 +37,11 @@ haproxy:
       - server          1m
       - http-keep-alive 10s
       - check           10s
+    stats:
+      - enable
+      - uri: '/admin?stats'
+      - realm: 'Haproxy\ Statistics'
+      - auth: 'admin1:AdMiN123'
 
     errorfiles:
       400: /etc/haproxy/errors/400.http
@@ -171,4 +176,6 @@ haproxy:
         - "content accept if serverhello"
       stickons:
         - "payload_lv(43,1) if clienthello"
+      reqrep:
+        - "^([^\ :]*)\ /static/(.*)	\1\ \2"
       options: "ssl-hello-chk"

@@ -25,6 +25,11 @@ global
     stats socket {{ salt['pillar.get']('haproxy:global:stats:socketpath', '/tmp/ha_stats.sock') }}
 {% endif %}
 
+# TODO: Make the following configurable from pillar
+    ssl-default-bind-options no-sslv3 no-tls-tickets force-tlsv12
+    ssl-default-bind-ciphers AES128+EECDH:AES128+EDH
+    tune.ssl.default-dh-param 2048
+
   {%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {}).iteritems() %}
 userlist {{ id }}
   {%- for id, entry in userlist.iteritems() %}

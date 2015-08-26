@@ -115,6 +115,27 @@ frontend {{ frontend[1].name }}
       {%- endfor %}
     {%- endif %}
 
+# frontend http-responses
+    {%- if 'http-responses' in frontend[1] %}
+      {%- for http_response in frontend[1].http_responses %}
+    http-response {{ http_response }}
+      {% endfor %}
+    {%- endif %}
+
+# frontend rspadds
+    {%- if 'rspadd' in frontend[1] %}
+      {%- for rspadd in frontend[1].rspadd %}
+    rspadd {{ rspadd }}
+      {%- endfor %}
+    {%- endif %}
+
+# frontend captures
+    {%- if 'captures' in frontend[1] %}
+      {%- for capture in frontend[1].captures %}
+    capture {{ capture }}
+      {%- endfor %}
+    {%- endif %}
+
 # backend targets
     default_backend {{ frontend[1].default_backend }}
     {%-if 'use_backends' in frontend[1] -%}

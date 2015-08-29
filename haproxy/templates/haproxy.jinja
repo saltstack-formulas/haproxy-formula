@@ -116,7 +116,7 @@ frontend {{ frontend[1].name }}
     {%- endif %}
 
 # frontend http-responses
-    {%- if 'http-responses' in frontend[1] %}
+    {%- if 'http_responses' in frontend[1] %}
       {%- for http_response in frontend[1].http_responses %}
     http-response {{ http_response }}
       {% endfor %}

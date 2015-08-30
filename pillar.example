@@ -20,6 +20,16 @@ haproxy:
 
     daemon: True
 
+
+  userlists:
+    userlist1:
+      users:
+        john: insecure-password doe
+        sam: insecure-password frodo
+#      groups:
+#        admins: users john sam
+#        guests: users jekyll hyde jane
+
   defaults:
     log: global
     mode: http

@@ -106,7 +106,8 @@ haproxy:
     frontend1:
       name: www-http
       bind: "*:80"
-      redirect: scheme https if !{ ssl_fc }
+      redirects: 
+        - scheme https if !{ ssl_fc }
       reqadd:
         - "X-Forwarded-Proto:\\ http"
       default_backend: www-backend
@@ -131,7 +132,8 @@ haproxy:
     backend1:
       name: www-backend
       balance: roundrobin
-      redirect: scheme https if !{ ssl_fc }
+      redirects: 
+        - scheme https if !{ ssl_fc }
       servers:
         server1:
           name: server1-its-name
@@ -140,7 +142,8 @@ haproxy:
           check: check
     static-backend:
       balance: roundrobin
-      redirect: scheme https if !{ ssl_fc }
+      redirects: 
+        - scheme https if !{ ssl_fc }
       options:
         - http-server-close
         - httpclose

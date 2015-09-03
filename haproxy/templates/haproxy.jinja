@@ -300,7 +300,7 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     maxconn {{ frontend[1].maxconn }}
     {%- endif %}
     {%- if 'options' in frontend[1] %}
-    {{- render_list_of_dictionaries('options', frontend[1].options) }}
+    {{- render_list_of_dictionaries('option', frontend[1].options) }}
     {%- endif %}
     {%- if 'uniqueidformat' in frontend[1] %}
     unique-id-format {{ frontend[1].uniqueidformat }}

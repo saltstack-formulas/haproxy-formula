@@ -48,6 +48,15 @@ global
 {%- if 'tune' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('tune', salt['pillar.get']('haproxy:global:tune'), '    ','.') }}
 {%- endif %}
+{%- if 'tune.ssl.default-dh-param' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('tune.ssl.default-dh-param', salt['pillar.get']('haproxy:global:tune.ssl.default-dh-param'), '    ','.') }}
+{%- endif %}
+{%- if 'ca-base' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ca-base', salt['pillar.get']('haproxy:global:ca-base'), '    ','.') }}
+{%- endif %}
+{%- if 'crt-base' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('crt-base', salt['pillar.get']('haproxy:global:crt-base'), '    ','.') }}
+{%- endif %}
 {%- if 'ssl-default-bind-ciphers' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('ssl-default-bind-ciphers', salt['pillar.get']('haproxy:global:ssl-default-bind-ciphers')) }}
 {%- endif %}
@@ -274,7 +283,7 @@ listen {{ listener[1].get('name', listener[0]) }}
     default-server {%- for option, value in listener[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
     {%- if 'servers' in listener[1] %}
-      {%- for server in listener[1].servers.iteritems() %}
+      {%- for server in listener[1].servers.iteritems()|sort %}
     server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
       {%- endfor %}
     {%- endif %}
@@ -448,7 +457,7 @@ backend {{ backend[1].get('name',backend[0]) }}
     default-server {%- for option, value in backend[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
     {%- if 'servers' in backend[1] %}
-      {%- for server in backend[1].servers.iteritems() %}
+      {%- for server in backend[1].servers.iteritems()|sort %}
     server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
       {%- endfor %}
     {%- endif %}

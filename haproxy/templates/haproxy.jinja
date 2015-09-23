@@ -95,6 +95,9 @@ defaults
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) -%}
     {{- render_list_of_dictionaries('option', salt['pillar.get']('haproxy:defaults:options')) }}
 {%- endif %}
+{%- if 'logformat' in salt['pillar.get']('haproxy:defaults', {}) %}
+    log-format {{ salt['pillar.get']('haproxy:defaults:logformat') }}
+{%- endif %}
 {%- if 'maxconn' in salt['pillar.get']('haproxy:defaults', {}) %}
     maxconn {{ salt['pillar.get']('haproxy:defaults:maxconn') }}
 {%- endif %}
@@ -151,6 +154,9 @@ listen {{ listener[1].get('name', listener[0]) }}
     {%- endif %}
     {%- if 'mode' in listener[1] %}
     mode {{ listener[1].mode }}
+    {%- endif %}
+    {%- if 'logformat' in listener[1] %}
+    log-format {{ listener[1].logformat }}
     {%- endif %}
     {%- if 'uniqueidformat' in listener[1] %}
     unique-id-format {{ listener[1].uniqueidformat }}
@@ -301,6 +307,9 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     {%- endif %}
     {%- if 'log' in frontend[1] %}
     log {{ frontend[1].log }}
+    {%- endif %}
+    {%- if 'logformat' in frontend[1] %}
+    log-format {{ frontend[1].logformat }}
     {%- endif %}
     {%- if 'mode' in frontend[1] %}
     mode {{ frontend[1].mode }}

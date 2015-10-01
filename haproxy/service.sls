@@ -7,8 +7,6 @@ haproxy.service:
     - require:
       - pkg: haproxy
         file: haproxy.service
-    - watch:
-      - file: haproxy.config
 {% else %}
   service.dead:
     - name: haproxy

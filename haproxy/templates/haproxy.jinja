@@ -92,6 +92,10 @@ defaults
     mode {{ salt['pillar.get']('haproxy:defaults:mode', 'http') }}
     retries {{ salt['pillar.get']('haproxy:defaults:retries', '3') }}
     balance {{ salt['pillar.get']('haproxy:defaults:balance', 'roundrobin') }}
+{%- if 'monitoruri' in salt['pillar.get']('haproxy:defaults', {}) -%}
+    monitor-uri {{ salt['pillar.get']('haproxy:defaults:monitoruri') }}
+{%- endif %}
+    hash-type {{ salt['pillar.get']('haproxy:defaults:hashtype', 'map-based') }}
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) -%}
     {{- render_list_of_dictionaries('option', salt['pillar.get']('haproxy:defaults:options')) }}
 {%- endif %}
@@ -155,6 +159,9 @@ listen {{ listener[1].get('name', listener[0]) }}
     {%- if 'mode' in listener[1] %}
     mode {{ listener[1].mode }}
     {%- endif %}
+    {%- if 'hashtype' in listener[1] %}
+    hash-type {{ listener[1].hashtype }}
+    {%- endif %}
     {%- if 'logformat' in listener[1] %}
     log-format {{ listener[1].logformat }}
     {%- endif %}
@@ -185,6 +192,12 @@ listen {{ listener[1].get('name', listener[0]) }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'monitoruri' in listener[1] %}
+    monitor-uri {{ listener[1].monitoruri }}
+    {%- endif %}
+    {%- if 'monitor' in listener[1] %}
+    monitor {{ listener[1].monitor }}
+    {%- endif %}
     {%- if 'tcprequests' in listener[1] %}
       {%- if listener[1].tcprequests is string %}
     tcp-request {{ listner[1].tcprequests }}
@@ -210,6 +223,11 @@ listen {{ listener[1].get('name', listener[0]) }}
         {%- for httprequest in listener[1].httprequests %}
     http-request {{ httprequest }}
         {%- endfor %}
+      {%- endif %}
+    {%- endif %}
+    {%- if 'httpcheck' in listener[1] %}
+      {%- if listener[1].httpcheck is string %}
+    http-check {{ listener[1].httpcheck }}
       {%- endif %}
     {%- endif %}
     {%- if 'reqadds' in listener[1] %}
@@ -335,6 +353,12 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
     {%- if 'acls' in frontend[1] %}
     {{- render_list_of_dictionaries('acl', frontend[1].acls) }}
     {%- endif %}
+    {%- if 'monitoruri' in frontend[1] %}
+    monitor-uri {{ frontend[1].monitoruri }}
+    {%- endif %}
+    {%- if 'monitor' in frontend[1] %}
+    monitor {{ frontend[1].monitor }}
+    {%- endif %}
     {%- if 'tcprequests' in frontend[1] %}
     {{- render_list_of_dictionaries('tcp-request', frontend[1].tcprequests) }}
     {%- endif %}
@@ -376,6 +400,9 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
 backend {{ backend[1].get('name',backend[0]) }}
     {%- if 'mode' in backend[1] %}
     mode {{ backend[1].mode }}
+    {%- endif %}
+    {%- if 'hashtype' in backend[1] %}
+    hash-type {{ backend[1].hashtype }}
     {%- endif %}
     {%- if 'balance' in backend[1] %}
     balance {{ backend[1].balance }}
@@ -420,6 +447,11 @@ backend {{ backend[1].get('name',backend[0]) }}
         {%- for httprequest in backend[1].httprequests %}
     http-request {{ httprequest }}
         {%- endfor %}
+      {%- endif %}
+    {%- endif %}
+    {%- if 'httpcheck' in backend[1] %}
+      {%- if backend[1].httpcheck is string %}
+    http-check {{ backend[1].httpcheck }}
       {%- endif %}
     {%- endif %}
     {%- if 'redirects' in backend[1] %}

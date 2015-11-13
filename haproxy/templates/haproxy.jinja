@@ -71,13 +71,13 @@ global
 userlist {{ id }}
   {%- for id, entry in userlist.items() %}
   {%- if id == "groups" %}
-    {%- for group in entry.items() %}
-    group {{ group[0] }} {{ group[1] }}
+    {%- for group_name, group in entry.items() %}
+    group {{ group_name }} {{ group }}
     {%- endfor %}
   {% endif %}
   {%- if id == "users" %}
-    {%- for user in entry.items() %}
-    user {{ user[0] }} {{ user[1] }}
+    {%- for user_name, user in entry.items() %}
+    user {{ user_name }} {{ user }}
     {%- endfor %}
   {% endif %}
   {%- endfor %}
@@ -118,8 +118,8 @@ defaults
     {{ render_list_of_dictionaries('stats', salt['pillar.get']('haproxy:defaults:stats')) }}
 {%- endif %}
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
-  {%- for errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').items() %}
-    errorfile {{ errorfile[0] }} {{ errorfile[1] }}
+  {%- for errorfile_name, errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').items() %}
+    errorfile {{ errorfile_name }} {{ errorfile }}
   {%- endfor %}
 {% endif %}
 {%- if salt['pillar.get']('haproxy:resolvers') %}
@@ -128,10 +128,10 @@ defaults
 #------------------
 # DNS resolvers
 #------------------
-  {%- for resolver in salt['pillar.get']('haproxy:resolvers', {}).items() %}
-resolvers {{ resolver[0] }}
-    {%- if 'options' in resolver[1] %}
-      {%- for option in resolver[1].options %}
+  {%- for resolver_name, resolver in salt['pillar.get']('haproxy:resolvers', {}).items() %}
+resolvers {{ resolver_name }}
+    {%- if 'options' in resolver %}
+      {%- for option in resolver.options %}
     {{ option }}
       {%- endfor %}
     {%- endif %}
@@ -142,153 +142,153 @@ resolvers {{ resolver[0] }}
 #------------------
 # listen instances
 #------------------
-  {%- for listener in salt['pillar.get']('haproxy:listens', {}).items() %}
-listen {{ listener[1].get('name', listener[0]) }}
-    {%- if 'bind' in listener[1] %}
-      {%- if listener[1].bind is string %}
-    bind {{ listener[1].bind }}
+  {%- for listener_name, listener in salt['pillar.get']('haproxy:listens', {}).items() %}
+listen {{ listener.get('name', listener_name) }}
+    {%- if 'bind' in listener %}
+      {%- if listener.bind is string %}
+    bind {{ listener.bind }}
       {%- else %}
-        {%- for socket in listener[1].bind %}
+        {%- for socket in listener.bind %}
     bind {{ socket }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'log' in listener[1] %}
-    log {{ listener[1].log }}
+    {%- if 'log' in listener %}
+    log {{ listener.log }}
     {%- endif %}
-    {%- if 'mode' in listener[1] %}
-    mode {{ listener[1].mode }}
+    {%- if 'mode' in listener %}
+    mode {{ listener.mode }}
     {%- endif %}
-    {%- if 'hashtype' in listener[1] %}
-    hash-type {{ listener[1].hashtype }}
+    {%- if 'hashtype' in listener %}
+    hash-type {{ listener.hashtype }}
     {%- endif %}
-    {%- if 'logformat' in listener[1] %}
-    log-format {{ listener[1].logformat }}
+    {%- if 'logformat' in listener %}
+    log-format {{ listener.logformat }}
     {%- endif %}
-    {%- if 'uniqueidformat' in listener[1] %}
-    unique-id-format {{ listener[1].uniqueidformat }}
+    {%- if 'uniqueidformat' in listener %}
+    unique-id-format {{ listener.uniqueidformat }}
     {%- endif %}
-    {%- if 'uniqueidheader' in listener[1] %}
-    unique-id-header {{ listener[1].uniqueidheader }}
+    {%- if 'uniqueidheader' in listener %}
+    unique-id-header {{ listener.uniqueidheader }}
     {%- endif %}
-    {%- if 'sticktable' in listener[1] %}
-    stick-table {{ listener[1].sticktable }}
+    {%- if 'sticktable' in listener %}
+    stick-table {{ listener.sticktable }}
     {%- endif %}
-    {%- if 'captures' in listener[1] %}
-      {%- if listener[1].captures is string %}
-    capture {{ listener[1].captures }}
+    {%- if 'captures' in listener %}
+      {%- if listener.captures is string %}
+    capture {{ listener.captures }}
       {%- else %}
-        {%- for capture in listener[1].captures %}
+        {%- for capture in listener.captures %}
     capture {{ capture }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'acls' in listener[1] %}
-      {%- if listener[1].acls is string %}
-    acl {{ listener[1].acls }}
+    {%- if 'acls' in listener %}
+      {%- if listener.acls is string %}
+    acl {{ listener.acls }}
       {%- else %}
-        {%- for acl in listener[1].acls %}
+        {%- for acl in listener.acls %}
     acl {{ acl }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'monitoruri' in listener[1] %}
-    monitor-uri {{ listener[1].monitoruri }}
+    {%- if 'monitoruri' in listener %}
+    monitor-uri {{ listener.monitoruri }}
     {%- endif %}
-    {%- if 'monitor' in listener[1] %}
-    monitor {{ listener[1].monitor }}
+    {%- if 'monitor' in listener %}
+    monitor {{ listener.monitor }}
     {%- endif %}
-    {%- if 'tcprequests' in listener[1] %}
-      {%- if listener[1].tcprequests is string %}
-    tcp-request {{ listner[1].tcprequests }}
+    {%- if 'tcprequests' in listener %}
+      {%- if listener.tcprequests is string %}
+    tcp-request {{ listner.tcprequests }}
       {%- else %}
-        {%- for tcprequest in listener[1].tcprequests %}
+        {%- for tcprequest in listener.tcprequests %}
     tcp-request {{ tcprequest }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'tcpresponses' in listener[1] %}
-      {%- if listener[1].tcpresponses is string %}
-    tcp-response {{ listener[1].tcpresponses }}
+    {%- if 'tcpresponses' in listener %}
+      {%- if listener.tcpresponses is string %}
+    tcp-response {{ listener.tcpresponses }}
       {%- else %}
-        {%- for tcpresponse in listener[1].tcpresponses %}
+        {%- for tcpresponse in listener.tcpresponses %}
     tcp-response {{ tcpresponse }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'httprequests' in listener[1] %}
-      {%- if listener[1].httprequests is string %}
-    http-request {{ listener[1].httprequests }}
+    {%- if 'httprequests' in listener %}
+      {%- if listener.httprequests is string %}
+    http-request {{ listener.httprequests }}
       {%- else %}
-        {%- for httprequest in listener[1].httprequests %}
+        {%- for httprequest in listener.httprequests %}
     http-request {{ httprequest }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'httpcheck' in listener[1] %}
-      {%- if listener[1].httpcheck is string %}
-    http-check {{ listener[1].httpcheck }}
+    {%- if 'httpcheck' in listener %}
+      {%- if listener.httpcheck is string %}
+    http-check {{ listener.httpcheck }}
       {%- endif %}
     {%- endif %}
-    {%- if 'reqadds' in listener[1] %}
-      {%- if listener[1].reqadds is string %}
-    reqadd {{ listener[1].reqadds }}
+    {%- if 'reqadds' in listener %}
+      {%- if listener.reqadds is string %}
+    reqadd {{ listener.reqadds }}
       {%- else %}
-        {%- for reqadd in listener[1].reqadds %}
+        {%- for reqadd in listener.reqadds %}
     reqadd {{ reqadd }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'redirects' in listener[1] %}
-      {%- if listener[1].redirects is string %}
-    redirect {{ listener[1].redirects }}
+    {%- if 'redirects' in listener %}
+      {%- if listener.redirects is string %}
+    redirect {{ listener.redirects }}
       {%- else %}
-        {%- for redirect in listener[1].redirects %}
+        {%- for redirect in listener.redirects %}
     redirect {{ redirect }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'stickons' in listener[1] %}
-      {%- if listener[1].stickons is string %}
-    stick on {{ listener[1].stickons }}
+    {%- if 'stickons' in listener %}
+      {%- if listener.stickons is string %}
+    stick on {{ listener.stickons }}
       {%- else %}
-        {%- for stickon in listener[1].stickons %}
+        {%- for stickon in listener.stickons %}
     stick on {{ stickon }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'default_backend' in listener[1] %}
-    default_backend {{ listener[1].default_backend }}
+    {%- if 'default_backend' in listener %}
+    default_backend {{ listener.default_backend }}
     {%- endif %}
-    {%- if 'use_backends' in listener[1] %}
-      {%- if listener[1].use_backends is string %}
-    use_backend {{ listener[1].use_backends }}
+    {%- if 'use_backends' in listener %}
+      {%- if listener.use_backends is string %}
+    use_backend {{ listener.use_backends }}
       {%- else %}
-        {%- for use_backend in listener[1].use_backends %}
+        {%- for use_backend in listener.use_backends %}
     use_backend {{ use_backend }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'balance' in listener[1] %}
-    balance {{ listener[1].balance }}
+    {%- if 'balance' in listener %}
+    balance {{ listener.balance }}
     {%- endif %}
-    {%- if 'maxconn' in listener[1] %}
-    maxconn {{ listener[1].maxconn }}
+    {%- if 'maxconn' in listener %}
+    maxconn {{ listener.maxconn }}
     {%- endif %}
-    {%- if 'options' in listener[1] %}
-      {%- if listener[1].options is string %}
-    option {{ listener[1].options }}
+    {%- if 'options' in listener %}
+      {%- if listener.options is string %}
+    option {{ listener.options }}
       {%- else %}
-        {%- for option in listener[1].options %}
+        {%- for option in listener.options %}
     option {{ option }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'cookie' in listener[1] %}
-    cookie {{ listener[1].cookie }}
+    {%- if 'cookie' in listener %}
+    cookie {{ listener.cookie }}
     {%- endif %}
-    {%- if 'stats' in listener[1] %}
-      {%- for option, value in listener[1].stats.items() %}
+    {%- if 'stats' in listener %}
+      {%- for option, value in listener.stats.items() %}
         {%- if option == 'enable' and value %}
     stats enable
         {%- else %}
@@ -296,19 +296,19 @@ listen {{ listener[1].get('name', listener[0]) }}
         {%- endif %}
       {%- endfor %}
     {%- endif %}
-    {%- if 'appsession' in listener[1] %}
-      {%- if listener[1].appsession is string %}
-    appsession {{ listener[1].appsession }}
+    {%- if 'appsession' in listener %}
+      {%- if listener.appsession is string %}
+    appsession {{ listener.appsession }}
       {%- else %}
-    appsession {%- for option in listener[1].appsession %}  {{ option }}  {%- endfor %}
+    appsession {%- for option in listener.appsession %}  {{ option }}  {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'defaultserver' in listener[1] %}
-    default-server {%- for option, value in listener[1].defaultserver.items() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+    {%- if 'defaultserver' in listener %}
+    default-server {%- for option, value in listener.defaultserver.items() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
-    {%- if 'servers' in listener[1] %}
-      {%- for server in listener[1].servers.items()|sort %}
-    server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
+    {%- if 'servers' in listener %}
+      {%- for server_name, server in listener.servers.items()|sort %}
+    server {{ server.get('name', server_name) }} {{ server.host }}:{{ server.port }} {{ server.check }} {{ server.get('extra', '') }}
       {%- endfor %}
     {%- endif %}
   {% endfor %}
@@ -318,76 +318,76 @@ listen {{ listener[1].get('name', listener[0]) }}
 #------------------
 # frontend instances
 #------------------
-  {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).items() %}
-frontend {{ frontend[1].get('name', frontend[0]) }}
-    {%- if 'bind' in frontend[1] %}
-    {{- render_list_of_dictionaries('bind', frontend[1].bind) }}
+  {%- for frontend_name, frontend in salt['pillar.get']('haproxy:frontends', {}).items() %}
+frontend {{ frontend.get('name', frontend_name) }}
+    {%- if 'bind' in frontend %}
+    {{- render_list_of_dictionaries('bind', frontend.bind) }}
     {%- endif %}
-    {%- if 'log' in frontend[1] %}
-    log {{ frontend[1].log }}
+    {%- if 'log' in frontend %}
+    log {{ frontend.log }}
     {%- endif %}
-    {%- if 'logformat' in frontend[1] %}
-    log-format {{ frontend[1].logformat }}
+    {%- if 'logformat' in frontend %}
+    log-format {{ frontend.logformat }}
     {%- endif %}
-    {%- if 'mode' in frontend[1] %}
-    mode {{ frontend[1].mode }}
+    {%- if 'mode' in frontend %}
+    mode {{ frontend.mode }}
     {%- endif %}
-    {%- if 'maxconn' in frontend[1] %}
-    maxconn {{ frontend[1].maxconn }}
+    {%- if 'maxconn' in frontend %}
+    maxconn {{ frontend.maxconn }}
     {%- endif %}
-    {%- if 'options' in frontend[1] %}
-    {{- render_list_of_dictionaries('option', frontend[1].options) }}
+    {%- if 'options' in frontend %}
+    {{- render_list_of_dictionaries('option', frontend.options) }}
     {%- endif %}
-    {%- if 'uniqueidformat' in frontend[1] %}
-    unique-id-format {{ frontend[1].uniqueidformat }}
+    {%- if 'uniqueidformat' in frontend %}
+    unique-id-format {{ frontend.uniqueidformat }}
     {%- endif %}
-    {%- if 'uniqueidheader' in frontend[1] %}
-    unique-id-header {{ frontend[1].uniqueidheader }}
+    {%- if 'uniqueidheader' in frontend %}
+    unique-id-header {{ frontend[uniqueidheader }}
     {%- endif %}
-    {%- if 'sticktable' in frontend[1] %}
-    stick-table {{ frontend[1].sticktable }}
+    {%- if 'sticktable' in frontend %}
+    stick-table {{ frontend.sticktable }}
     {%- endif %}
-    {%- if 'captures' in frontend[1] %}
-    {{- render_list_of_dictionaries('capture', frontend[1].captures) }}
+    {%- if 'captures' in frontend %}
+    {{- render_list_of_dictionaries('capture', frontend.captures) }}
     {%- endif %}
-    {%- if 'acls' in frontend[1] %}
-    {{- render_list_of_dictionaries('acl', frontend[1].acls) }}
+    {%- if 'acls' in frontend %}
+    {{- render_list_of_dictionaries('acl', frontend.acls) }}
     {%- endif %}
-    {%- if 'monitoruri' in frontend[1] %}
-    monitor-uri {{ frontend[1].monitoruri }}
+    {%- if 'monitoruri' in frontend %}
+    monitor-uri {{ frontend.monitoruri }}
     {%- endif %}
-    {%- if 'monitor' in frontend[1] %}
-    monitor {{ frontend[1].monitor }}
+    {%- if 'monitor' in frontend %}
+    monitor {{ frontend.monitor }}
     {%- endif %}
-    {%- if 'tcprequests' in frontend[1] %}
-    {{- render_list_of_dictionaries('tcp-request', frontend[1].tcprequests) }}
+    {%- if 'tcprequests' in frontend %}
+    {{- render_list_of_dictionaries('tcp-request', frontend.tcprequests) }}
     {%- endif %}
-    {%- if 'tcpresponses' in frontend[1] %}
-    {{- render_list_of_dictionaries('tcp-response', frontend[1].tcpresponses) }}
+    {%- if 'tcpresponses' in frontend %}
+    {{- render_list_of_dictionaries('tcp-response', frontend.tcpresponses) }}
     {%- endif %}
-    {%- if 'httprequests' in frontend[1] %}
-    {{- render_list_of_dictionaries('http-request', frontend[1].httprequests) }}
+    {%- if 'httprequests' in frontend %}
+    {{- render_list_of_dictionaries('http-request', frontend.httprequests) }}
     {%- endif %}
-    {%- if 'httpresponses' in frontend[1] %}
-    {{- render_list_of_dictionaries('http-response', frontend[1].httpresponses) }}
+    {%- if 'httpresponses' in frontend %}
+    {{- render_list_of_dictionaries('http-response', frontend.httpresponses) }}
     {%- endif %}
-    {%- if 'rspadds' in frontend[1] %}
-    {{- render_list_of_dictionaries('rspadd', frontend[1].rspadds) }}
+    {%- if 'rspadds' in frontend %}
+    {{- render_list_of_dictionaries('rspadd', frontend.rspadds) }}
     {%- endif %}
-    {%- if 'reqadds' in frontend[1] %}
-    {{- render_list_of_dictionaries('reqadd', frontend[1].reqadds) }}
+    {%- if 'reqadds' in frontend %}
+    {{- render_list_of_dictionaries('reqadd', frontend.reqadds) }}
     {%- endif %}
-    {%- if 'redirects' in frontend[1] %}
-    {{- render_list_of_dictionaries('redirect', frontend[1].redirects) }}
+    {%- if 'redirects' in frontend %}
+    {{- render_list_of_dictionaries('redirect', frontend.redirects) }}
     {%- endif %}
-    {%- if 'stickons' in frontend[1] %}
-    {{- render_list_of_dictionaries('stickon', frontend[1].stickons) }}
+    {%- if 'stickons' in frontend %}
+    {{- render_list_of_dictionaries('stickon', frontend.stickons) }}
     {%- endif %}
-    {%- if 'default_backend' in frontend[1] %}
-    default_backend {{ frontend[1].default_backend }}
+    {%- if 'default_backend' in frontend %}
+    default_backend {{ frontend.default_backend }}
     {%- endif %}
-    {%- if 'use_backends' in frontend[1] %}
-    {{- render_list_of_dictionaries('use_backend', frontend[1].use_backends) }}
+    {%- if 'use_backends' in frontend %}
+    {{- render_list_of_dictionaries('use_backend', frontend.use_backends) }}
     {%- endif %}
   {% endfor %}
 {% endif %}
@@ -396,87 +396,87 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
 #------------------
 # backend instances
 #------------------
-  {%- for backend in salt['pillar.get']('haproxy:backends', {}).items() %}
-backend {{ backend[1].get('name',backend[0]) }}
-    {%- if 'mode' in backend[1] %}
-    mode {{ backend[1].mode }}
+  {%- for backend_name, backend in salt['pillar.get']('haproxy:backends', {}).items() %}
+backend {{ backend.get('name', backend_name) }}
+    {%- if 'mode' in backend %}
+    mode {{ backend.mode }}
     {%- endif %}
-    {%- if 'hashtype' in backend[1] %}
-    hash-type {{ backend[1].hashtype }}
+    {%- if 'hashtype' in backend %}
+    hash-type {{ backend.hashtype }}
     {%- endif %}
-    {%- if 'balance' in backend[1] %}
-    balance {{ backend[1].balance }}
+    {%- if 'balance' in backend %}
+    balance {{ backend.balance }}
     {%- endif %}
-    {%- if 'options' in backend[1] %}
-      {%- if backend[1].options is string %}
-    option {{ backend[1].options }}
+    {%- if 'options' in backend %}
+      {%- if backend.options is string %}
+    option {{ backend.options }}
       {%- else %}
-        {%- for option in backend[1].options %}
+        {%- for option in backend.options %}
     option {{ option }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'sticktable' in backend[1] %}
-    stick-table {{ backend[1].sticktable }}
+    {%- if 'sticktable' in backend %}
+    stick-table {{ backend.sticktable }}
     {%- endif %}
-    {%- if 'acls' in backend[1] %}
-    {{- render_list_of_dictionaries('acl', backend[1].acls) }}
+    {%- if 'acls' in backend %}
+    {{- render_list_of_dictionaries('acl', backend.acls) }}
     {%- endif %}
-    {%- if 'tcprequests' in backend[1] %}
-      {%- if backend[1].tcprequests is string %}
-    tcp-request {{ backend[1].tcprequests }}
+    {%- if 'tcprequests' in backend %}
+      {%- if backend.tcprequests is string %}
+    tcp-request {{ backend.tcprequests }}
       {%- else %}
-        {%- for tcprequest in backend[1].tcprequests %}
+        {%- for tcprequest in backend.tcprequests %}
     tcp-request {{ tcprequest }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'tcpresponses' in backend[1] %}
-      {%- if backend[1].tcpresponses is string %}
-    tcp-response {{ backend[1].tcpresponses }}
+    {%- if 'tcpresponses' in backend %}
+      {%- if backend.tcpresponses is string %}
+    tcp-response {{ backend.tcpresponses }}
       {%- else %}
-        {%- for tcpresponse in backend[1].tcpresponses %}
+        {%- for tcpresponse in backend.tcpresponses %}
     tcp-response {{ tcpresponse }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'httprequests' in backend[1] %}
-      {%- if backend[1].httprequests is string %}
-    http-request {{ backend[1].httprequests }}
+    {%- if 'httprequests' in backend %}
+      {%- if backend.httprequests is string %}
+    http-request {{ backend.httprequests }}
       {%- else %}
-        {%- for httprequest in backend[1].httprequests %}
+        {%- for httprequest in backend.httprequests %}
     http-request {{ httprequest }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'httpcheck' in backend[1] %}
-      {%- if backend[1].httpcheck is string %}
-    http-check {{ backend[1].httpcheck }}
+    {%- if 'httpcheck' in backend %}
+      {%- if backend.httpcheck is string %}
+    http-check {{ backend.httpcheck }}
       {%- endif %}
     {%- endif %}
-    {%- if 'redirects' in backend[1] %}
-      {%- if backend[1].redirects is string %}
-    redirect {{ backend[1].redirects }}
+    {%- if 'redirects' in backend %}
+      {%- if backend.redirects is string %}
+    redirect {{ backend.redirects }}
       {%- else %}
-        {%- for redirect in backend[1].redirects %}
+        {%- for redirect in backend.redirects %}
     redirect {{ redirect }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'stickons' in backend[1] %}
-      {%- if backend[1].stickons is string %}
-    stick on {{ backend[1].stickons }}
+    {%- if 'stickons' in backend %}
+      {%- if backend.stickons is string %}
+    stick on {{ backend.stickons }}
       {%- else %}
-        {%- for stickon in backend[1].stickons %}
+        {%- for stickon in backend.stickons %}
     stick on {{ stickon }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'cookie' in backend[1] %}
-    cookie {{ backend[1].cookie }}
+    {%- if 'cookie' in backend %}
+    cookie {{ backend.cookie }}
     {%- endif %}
-    {%- if 'stats' in backend[1] %}
-      {%- for option, value in backend[1].stats.items() %}
+    {%- if 'stats' in backend %}
+      {%- for option, value in backend.stats.items() %}
         {%- if option == 'enable' and value %}
     stats enable
         {%- else %}
@@ -484,22 +484,22 @@ backend {{ backend[1].get('name',backend[0]) }}
         {%- endif %}
       {%- endfor %}
     {%- endif %}
-    {%- if 'appsession' in backend[1] %}
-      {%- if backend[1].appsession is string %}
-    appsession {{ backend[1].appsession }}
+    {%- if 'appsession' in backend %}
+      {%- if backend.appsession is string %}
+    appsession {{ backend.appsession }}
       {%- else %}
-    appsession {%- for option in backend[1].appsession %}  {{ option }}  {%- endfor %}
+    appsession {%- for option in backend.appsession %}  {{ option }}  {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'reqreps' in backend[1] %}
-    {{- render_list_of_dictionaries('reqrep', backend[1].reqreps) }}
+    {%- if 'reqreps' in backend %}
+    {{- render_list_of_dictionaries('reqrep', backend.reqreps) }}
     {%- endif %}
-    {%- if 'defaultserver' in backend[1] %}
-    default-server {%- for option, value in backend[1].defaultserver.items() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+    {%- if 'defaultserver' in backend %}
+    default-server {%- for option, value in backend.defaultserver.items() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
-    {%- if 'servers' in backend[1] %}
-      {%- for server in backend[1].servers.items()|sort %}
-    server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
+    {%- if 'servers' in backend %}
+      {%- for server_name, server in backend.servers.items()|sort %}
+    server {{ server.get('name', server_name) }} {{ server.host }}:{{ server.port }} {{ server.check }} {{ server.get('extra', '') }}
       {%- endfor %}
     {%- endif %}
   {% endfor %}

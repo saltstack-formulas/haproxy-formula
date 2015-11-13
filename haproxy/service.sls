@@ -6,12 +6,15 @@ haproxy.service:
     - reload: True
     - require:
       - pkg: haproxy
-        file: haproxy.service
+{% if salt['grains.get']('os_family') == 'Debian' %}
+      - file: haproxy.service
+{% endif %}
 {% else %}
   service.dead:
     - name: haproxy
     - enable: False
 {% endif %}
+{% if salt['grains.get']('os_family') == 'Debian' %}
   file.replace:
     - name: /etc/default/haproxy
 {% if salt['pillar.get']('haproxy:enabled', True) %}
@@ -22,3 +25,4 @@ haproxy.service:
     - repl: ENABLED=0
 {% endif %}
     - show_changes: True
+{% endif %}

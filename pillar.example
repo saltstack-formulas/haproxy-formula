@@ -109,14 +109,14 @@ haproxy:
       bind: "*:80"
       redirects: 
         - scheme https if !{ ssl_fc }
-      reqadd:
+      reqadds:
         - "X-Forwarded-Proto:\\ http"
       default_backend: www-backend
 
     www-https:
       bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
       logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r\\ ssl_version:%sslv\\ ssl_cipher:%sslc"
-      reqadd:
+      reqadds:
         - "X-Forwarded-Proto:\\ https"
       default_backend: www-backend
       acls:

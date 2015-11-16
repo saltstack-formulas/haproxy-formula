@@ -342,7 +342,7 @@ frontend {{ frontend.get('name', frontend_name) }}
     unique-id-format {{ frontend.uniqueidformat }}
     {%- endif %}
     {%- if 'uniqueidheader' in frontend %}
-    unique-id-header {{ frontend[uniqueidheader }}
+    unique-id-header {{ frontend.uniqueidheader }}
     {%- endif %}
     {%- if 'sticktable' in frontend %}
     stick-table {{ frontend.sticktable }}

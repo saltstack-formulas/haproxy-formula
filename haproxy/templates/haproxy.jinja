@@ -64,11 +64,7 @@ global
     {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
 {%- endif %}
 
-<<<<<<< HEAD
-{%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {}).items() %}
-=======
 {%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {})|dictsort %}
->>>>>>> Use dictsort instead of iteritems()/items()
 #------------------
 # Global Userlists
 #------------------

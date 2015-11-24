@@ -64,19 +64,19 @@ global
     {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
 {%- endif %}
 
-{%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {}).iteritems() %}
+{%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {}).items() %}
 #------------------
 # Global Userlists
 #------------------
 userlist {{ id }}
-  {%- for id, entry in userlist.iteritems() %}
+  {%- for id, entry in userlist.items() %}
   {%- if id == "groups" %}
-    {%- for group in entry.iteritems() %}
+    {%- for group in entry.items() %}
     group {{ group[0] }} {{ group[1] }}
     {%- endfor %}
   {% endif %}
   {%- if id == "users" %}
-    {%- for user in entry.iteritems() %}
+    {%- for user in entry.items() %}
     user {{ user[0] }} {{ user[1] }}
     {%- endfor %}
   {% endif %}
@@ -118,7 +118,7 @@ defaults
     {{ render_list_of_dictionaries('stats', salt['pillar.get']('haproxy:defaults:stats')) }}
 {%- endif %}
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
-  {%- for errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').iteritems() %}
+  {%- for errorfile in salt['pillar.get']('haproxy:defaults:errorfiles').items() %}
     errorfile {{ errorfile[0] }} {{ errorfile[1] }}
   {%- endfor %}
 {% endif %}
@@ -128,7 +128,7 @@ defaults
 #------------------
 # DNS resolvers
 #------------------
-  {%- for resolver in salt['pillar.get']('haproxy:resolvers', {}).iteritems() %}
+  {%- for resolver in salt['pillar.get']('haproxy:resolvers', {}).items() %}
 resolvers {{ resolver[0] }}
     {%- if 'options' in resolver[1] %}
       {%- for option in resolver[1].options %}
@@ -142,7 +142,7 @@ resolvers {{ resolver[0] }}
 #------------------
 # listen instances
 #------------------
-  {%- for listener in salt['pillar.get']('haproxy:listens', {}).iteritems() %}
+  {%- for listener in salt['pillar.get']('haproxy:listens', {}).items() %}
 listen {{ listener[1].get('name', listener[0]) }}
     {%- if 'bind' in listener[1] %}
       {%- if listener[1].bind is string %}
@@ -288,7 +288,7 @@ listen {{ listener[1].get('name', listener[0]) }}
     cookie {{ listener[1].cookie }}
     {%- endif %}
     {%- if 'stats' in listener[1] %}
-      {%- for option, value in listener[1].stats.iteritems() %}
+      {%- for option, value in listener[1].stats.items() %}
         {%- if option == 'enable' and value %}
     stats enable
         {%- else %}
@@ -304,10 +304,10 @@ listen {{ listener[1].get('name', listener[0]) }}
       {%- endif %}
     {%- endif %}
     {%- if 'defaultserver' in listener[1] %}
-    default-server {%- for option, value in listener[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+    default-server {%- for option, value in listener[1].defaultserver.items() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
     {%- if 'servers' in listener[1] %}
-      {%- for server in listener[1].servers.iteritems()|sort %}
+      {%- for server in listener[1].servers.items()|sort %}
     server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
       {%- endfor %}
     {%- endif %}
@@ -318,7 +318,7 @@ listen {{ listener[1].get('name', listener[0]) }}
 #------------------
 # frontend instances
 #------------------
-  {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).iteritems() %}
+  {%- for frontend in salt['pillar.get']('haproxy:frontends', {}).items() %}
 frontend {{ frontend[1].get('name', frontend[0]) }}
     {%- if 'bind' in frontend[1] %}
     {{- render_list_of_dictionaries('bind', frontend[1].bind) }}
@@ -396,7 +396,7 @@ frontend {{ frontend[1].get('name', frontend[0]) }}
 #------------------
 # backend instances
 #------------------
-  {%- for backend in salt['pillar.get']('haproxy:backends', {}).iteritems() %}
+  {%- for backend in salt['pillar.get']('haproxy:backends', {}).items() %}
 backend {{ backend[1].get('name',backend[0]) }}
     {%- if 'mode' in backend[1] %}
     mode {{ backend[1].mode }}
@@ -476,7 +476,7 @@ backend {{ backend[1].get('name',backend[0]) }}
     cookie {{ backend[1].cookie }}
     {%- endif %}
     {%- if 'stats' in backend[1] %}
-      {%- for option, value in backend[1].stats.iteritems() %}
+      {%- for option, value in backend[1].stats.items() %}
         {%- if option == 'enable' and value %}
     stats enable
         {%- else %}
@@ -495,10 +495,10 @@ backend {{ backend[1].get('name',backend[0]) }}
     {{- render_list_of_dictionaries('reqrep', backend[1].reqreps) }}
     {%- endif %}
     {%- if 'defaultserver' in backend[1] %}
-    default-server {%- for option, value in backend[1].defaultserver.iteritems() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+    default-server {%- for option, value in backend[1].defaultserver.items() %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
     {%- if 'servers' in backend[1] %}
-      {%- for server in backend[1].servers.iteritems()|sort %}
+      {%- for server in backend[1].servers.items()|sort %}
     server {{ server[1].get('name',server[0]) }} {{ server[1].host }}:{{ server[1].port }} {{ server[1].check }} {{ server[1].get('extra', '') }}
       {%- endfor %}
     {%- endif %}

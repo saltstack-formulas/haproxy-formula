@@ -89,7 +89,7 @@ userlist {{ id }}
 #------------------
 defaults
     log {{ salt['pillar.get']('haproxy:defaults:log', 'global') }}
-{%- if 'mode' in salt['pillar.get']('haproxy:defaults', {}) %}
+{% if 'mode' in salt['pillar.get']('haproxy:defaults', {}) %}
     mode {{ salt['pillar.get']('haproxy:defaults:mode', 'http') }}
 {%- endif %}
 {%- if 'retries' in salt['pillar.get']('haproxy:defaults', {}) -%}

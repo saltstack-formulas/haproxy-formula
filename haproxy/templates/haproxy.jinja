@@ -89,13 +89,21 @@ userlist {{ id }}
 #------------------
 defaults
     log {{ salt['pillar.get']('haproxy:defaults:log', 'global') }}
+{%- if 'mode' in salt['pillar.get']('haproxy:defaults', {}) -%}
     mode {{ salt['pillar.get']('haproxy:defaults:mode', 'http') }}
+{%- endif %}
+{%- if 'retries' in salt['pillar.get']('haproxy:defaults', {}) -%}
     retries {{ salt['pillar.get']('haproxy:defaults:retries', '3') }}
+{%- endif %}
+{%- if 'balance' in salt['pillar.get']('haproxy:defaults', {}) -%}
     balance {{ salt['pillar.get']('haproxy:defaults:balance', 'roundrobin') }}
+{%- endif %}
 {%- if 'monitoruri' in salt['pillar.get']('haproxy:defaults', {}) -%}
     monitor-uri {{ salt['pillar.get']('haproxy:defaults:monitoruri') }}
 {%- endif %}
+{%- if 'hashtype' in salt['pillar.get']('haproxy:defaults', {}) -%}
     hash-type {{ salt['pillar.get']('haproxy:defaults:hashtype', 'map-based') }}
+{%- endif %}
 {%- if 'options' in salt['pillar.get']('haproxy:defaults', {}) -%}
     {{- render_list_of_dictionaries('option', salt['pillar.get']('haproxy:defaults:options')) }}
 {%- endif %}

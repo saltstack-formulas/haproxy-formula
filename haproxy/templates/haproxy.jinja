@@ -283,6 +283,11 @@ listen {{ listener.get('name', listener_name) }}
     {%- if 'maxconn' in listener %}
     maxconn {{ listener.maxconn }}
     {%- endif %}
+    {%- if 'timeouts' in listener %}
+      {%- for timeout in listener.timeouts %}
+    timeout {{ timeout }}
+      {%- endfor %}
+    {%- endif %}
     {%- if 'options' in listener %}
       {%- if listener.options is string %}
     option {{ listener.options }}

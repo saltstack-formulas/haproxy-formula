@@ -353,9 +353,6 @@ frontend {{ frontend.get('name', frontend_name) }}
     {%- if 'acls' in frontend %}
     {{- render_list_of_dictionaries('acl', frontend.acls) }}
     {%- endif %}
-    {%- if 'blocks' in frontend %}
-    {{- render_list_of_dictionaries('block', frontend.blocks) }}
-    {%- endif %}
     {%- if 'monitoruri' in frontend %}
     monitor-uri {{ frontend.monitoruri }}
     {%- endif %}

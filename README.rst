@@ -59,6 +59,7 @@ Currently, only a handful of options can be set using the pillar:
   + reqadd: an array of reqadd statements. Looped over and put in the configuration, no parsing
   + default_backend: sets the default backend
   + acls: a list of acls, not parsed, simply looped and put in to the configuration
+  + blocks: a list of block statements, not parsed, simply looped and put in to the configuration
   + use_backends: a list of use_backend statements, looped over, not parsed
 
 - Backend; Backend(s) is a list of the backends you desire to have in your haproxy setup, per backend you can set:

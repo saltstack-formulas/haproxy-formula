@@ -308,7 +308,7 @@ listen {{ listener.get('name', listener_name) }}
     {%- endif %}
     {%- if 'servers' in listener %}
       {%- for server_name, server in listener.servers|dictsort %}
-    server {{ server.get('name', server_name) }} {{ server.host }}:{{ server.port }} {{ server.check }} {{ server.get('extra', '') }}
+    server {{ server.get('name', server_name) }} {{ server.host }}{% if 'port' in server %}:{{ server.port }}{% endif %} {{ server.get('check', '') }} {{ server.get('extra', '') }}
       {%- endfor %}
     {%- endif %}
   {% endfor %}
@@ -502,7 +502,7 @@ backend {{ backend.get('name', backend_name) }}
     {%- endif %}
     {%- if 'servers' in backend %}
       {%- for server_name, server in backend.servers|dictsort %}
-    server {{ server.get('name', server_name) }} {{ server.host }}:{{ server.port }} {{ server.check }} {{ server.get('extra', '') }}
+    server {{ server.get('name', server_name) }} {{ server.host }}{% if 'port' in server %}:{{ server.port }}{% endif %} {{ server.get('check', '') }} {{ server.get('extra', '') }}
       {%- endfor %}
     {%- endif %}
   {% endfor %}

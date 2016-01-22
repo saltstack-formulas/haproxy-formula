@@ -6,5 +6,7 @@ haproxy.config:
    - user: root
    - group: root
    - mode: 644
+   - require_in:
+     - service: haproxy.service
    - watch_in:
      - service: haproxy.service

@@ -63,6 +63,15 @@ global
 {%- if 'ssl-default-bind-options' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
 {%- endif %}
+{%- if 'extra' in salt['pillar.get']('haproxy:global', {}) %}
+  {%- if salt['pillar.get']('haproxy:global:extra', {}) is string %}
+    {{ salt['pillar.get']('haproxy:global:extra') }}
+  {%- else %}
+    {%- for line in salt['pillar.get']('haproxy:global:extra') %}
+    {{ line }}
+    {%- endfor %}
+  {%- endif %}
+{%- endif %}
 
 {%- for id, userlist in salt['pillar.get']('haproxy:userlists',  {})|dictsort %}
 #------------------
@@ -124,6 +133,15 @@ defaults
 {%- endif %}
 {%- if 'stats' in salt['pillar.get']('haproxy:defaults', {}) -%}
     {{ render_list_of_dictionaries('stats', salt['pillar.get']('haproxy:defaults:stats')) }}
+{%- endif %}
+{%- if 'extra' in salt['pillar.get']('haproxy:defaults', {}) %}
+  {%- if salt['pillar.get']('haproxy:defaults:extra', {}) is string %}
+    {{ salt['pillar.get']('haproxy:defaults:extra') }}
+  {%- else %}
+    {%- for line in salt['pillar.get']('haproxy:defaults:extra') %}
+    {{ line }}
+    {%- endfor %}
+  {%- endif %}
 {%- endif %}
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for errorfile_name, errorfile in salt['pillar.get']('haproxy:defaults:errorfiles')|dictsort %}
@@ -316,6 +334,13 @@ listen {{ listener.get('name', listener_name) }}
     appsession {%- for option in listener.appsession %}  {{ option }}  {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'extra' in listener %}
+      {%- if listener.extra is string %}
+    {{ listener.extra }}
+      {%- else %}
+    {%- for line in listerner.extra %}  {{ line }}  {%- endfor %}
+      {%- endif %}
+    {%- endif %}
     {%- if 'defaultserver' in listener %}
     default-server {%- for option, value in listener.defaultserver|dictsort %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
     {%- endif %}
@@ -401,6 +426,15 @@ frontend {{ frontend.get('name', frontend_name) }}
     {%- endif %}
     {%- if 'stickons' in frontend %}
     {{- render_list_of_dictionaries('stickon', frontend.stickons) }}
+    {%- endif %}
+    {%- if 'extra' in frontend %}
+      {%- if frontend.extra is string %}
+    {{ frontend.extra }}
+      {%- else %}
+    {%- for line in frontend.extra %}
+    {{ line }}
+    {%- endfor %}
+      {%- endif %}
     {%- endif %}
     {%- if 'default_backend' in frontend %}
     default_backend {{ frontend.default_backend }}
@@ -512,6 +546,13 @@ backend {{ backend.get('name', backend_name) }}
     {%- endif %}
     {%- if 'reqreps' in backend %}
     {{- render_list_of_dictionaries('reqrep', backend.reqreps) }}
+    {%- endif %}
+    {%- if 'extra' in backend %}
+      {%- if backend.extra is string %}
+    {{ backend.extra }}
+      {%- else %}
+    {%- for line in backend.extra %}  {{ line }}  {%- endfor %}
+      {%- endif %}
     {%- endif %}
     {%- if 'defaultserver' in backend %}
     default-server {%- for option, value in backend.defaultserver|dictsort %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}

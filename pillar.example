@@ -127,6 +127,7 @@ haproxy:
         - url_static       path_end       -i .jpg .gif .png .css .js
       use_backends:
         - static-backend  if url_static
+      extra: "rspadd  Strict-Transport-Security:\ max-age=15768000"
     some-services:
       bind:
         - "*:8080"
@@ -139,6 +140,7 @@ haproxy:
       balance: roundrobin
       redirects: 
         - scheme https if !{ ssl_fc }
+      extra: "reqidel ^X-Forwarded-For:"
       servers:
         server1:
           name: server1-its-name

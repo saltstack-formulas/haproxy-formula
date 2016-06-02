@@ -74,6 +74,7 @@ Currently, only a handful of options can be set using the pillar:
     + port: the port to contact the server on
     + check: set to check to enable checking
 
+- For global, default, frontend, listener, backend and server it is possible to use the "extra" option for more rare settings not mentioned above.
 
 ``haproxy.service``
 -------------------

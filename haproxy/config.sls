@@ -4,7 +4,11 @@ haproxy.config:
    - source: salt://haproxy/templates/haproxy.jinja
    - template: jinja
    - user: root
+   {% if salt['grains.get']('os_family') == 'FreeBSD' %}
+   - group: wheel
+   {% else %}
    - group: root
+   {% endif %}
    - mode: 644
    - require_in:
      - service: haproxy.service

@@ -346,7 +346,7 @@ listen {{ listener.get('name', listener_name) }}
     {%- endif %}
     {%- if 'servers' in listener %}
       {%- for server_name, server in listener.servers|dictsort %}
-    server {{ server.get('name', server_name) }} {{ server.host }}{% if 'port' in server %}:{{ server.port }}{% endif %} {{ server.get('check', '') }} {{ server.get('extra', '') }}
+    server {{ server.get('name', server_name) }} {{ server.host }}{% if 'port' in server %}:{{ server.port }}{% endif %} {% if 'maxconn' in server %} maxconn {{ server.maxconn }}{% endif %} {{ server.get('check', '') }} {{ server.get('extra', '') }}
       {%- endfor %}
     {%- endif %}
   {% endfor %}

@@ -4,6 +4,7 @@
 
 haproxy:
   enabled: True
+  overwrite: True # Overwrite an existing config file if present (default behaviour unless set to false)
   config_file_path: /etc/haproxy/haproxy.cfg
   global:
     stats:

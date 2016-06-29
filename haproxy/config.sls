@@ -16,5 +16,5 @@ haproxy.config:
      - service: haproxy.service
    {% if salt['pillar.get']('haproxy:overwrite', default=True) == False %}
    - unless:
-     - test -e /etc/haproxy/haproxy.cfg
+     - test -e {{ salt['pillar.get']('haproxy:config_file_path', '/etc/haproxy/haproxy.cfg') }}
    {% endif %}

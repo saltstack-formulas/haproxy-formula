@@ -35,7 +35,7 @@ Currently, only a handful of options can be set using the pillar:
 
 - Global
 
-  + stats: enable stats, curently only via a unix socket which can be set to a path
+  + stats: enable stats, curently only via a unix socket which can be set to a path with custom permissions
   + user: sets the user haproxy shall run as
   + group: sets the group haproxy shall run as
   + chroot: allows you to turn on chroot and set a directory

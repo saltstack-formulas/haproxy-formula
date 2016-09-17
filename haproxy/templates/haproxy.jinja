@@ -551,7 +551,9 @@ backend {{ backend.get('name', backend_name) }}
       {%- if backend.extra is string %}
     {{ backend.extra }}
       {%- else %}
-    {%- for line in backend.extra %}  {{ line }}  {%- endfor %}
+    {%- for line in backend.extra %}
+    {{ line }}
+    {%- endfor %}
       {%- endif %}
     {%- endif %}
     {%- if 'defaultserver' in backend %}

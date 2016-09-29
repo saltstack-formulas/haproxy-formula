@@ -226,7 +226,7 @@ listen {{ listener.get('name', listener_name) }}
     {%- endif %}
     {%- if 'tcprequests' in listener %}
       {%- if listener.tcprequests is string %}
-    tcp-request {{ listner.tcprequests }}
+    tcp-request {{ listener.tcprequests }}
       {%- else %}
         {%- for tcprequest in listener.tcprequests %}
     tcp-request {{ tcprequest }}

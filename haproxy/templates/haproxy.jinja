@@ -338,7 +338,8 @@ listen {{ listener.get('name', listener_name) }}
       {%- if listener.extra is string %}
     {{ listener.extra }}
       {%- else %}
-    {%- for line in listener.extra %}  {{ line }}  {%- endfor %}
+    {%- for line in listener.extra %}
+    {{ line }}  {%- endfor %}
       {%- endif %}
     {%- endif %}
     {%- if 'defaultserver' in listener %}

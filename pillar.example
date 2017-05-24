@@ -201,5 +201,5 @@ haproxy:
       stickons:
         - "payload_lv(43,1) if clienthello"
       reqrep:
-        - "^([^\ :]*)\ /static/(.*)	\1\ \2"
+        - '^([^\ :]*)\ /static/(.*)	\1\ \2'
       options: "ssl-hello-chk"

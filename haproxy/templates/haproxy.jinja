@@ -23,8 +23,14 @@
 # Global settings
 #------------------
 global
+{%- if salt['pillar.get']('haproxy:global:log', []) != [] %}
+{%- for log in salt['pillar.get']('haproxy:global:log') %}
+    log {{log}}
+{%- endfor %}
+{%- else %}
     log /dev/log    local0
     log /dev/log    local1 notice
+{%- endif %}
     user {{ salt['pillar.get']('haproxy:global:user', 'haproxy') }}
     group {{ salt['pillar.get']('haproxy:global:group', 'haproxy') }}
 {%- if salt['pillar.get']('haproxy:global:chroot:enable', 'no') == True %}

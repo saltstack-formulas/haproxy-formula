@@ -7,6 +7,9 @@ haproxy:
   overwrite: True # Overwrite an existing config file if present (default behaviour unless set to false)
   config_file_path: /etc/haproxy/haproxy.cfg
   global:
+    log:
+      - 127.0.0.1 local2
+      - 127.0.0.1 local1 notice
     stats:
       enable: True
       socketpath: /var/lib/haproxy/stats

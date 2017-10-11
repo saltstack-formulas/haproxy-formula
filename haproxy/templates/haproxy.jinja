@@ -472,6 +472,11 @@ backend {{ backend.get('name', backend_name) }}
     {%- if 'balance' in backend %}
     balance {{ backend.balance }}
     {%- endif %}
+    {%- if 'timeouts' in backend %}
+      {%- for timeout in backend.timeouts %}
+    timeout {{ timeout }}
+      {%- endfor %}
+    {%- endif %}
     {%- if 'options' in backend %}
       {%- if backend.options is string %}
     option {{ backend.options }}

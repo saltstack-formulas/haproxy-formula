@@ -3,6 +3,10 @@
 #
 
 haproxy:
+  # use lookup section to override 'map.jinja' values
+  #lookup:
+    #user: 'custom-user'
+    #group: 'custom-group'
   enabled: True
   overwrite: True # Overwrite an existing config file if present (default behaviour unless set to false)
   config_file_path: /etc/haproxy/haproxy.cfg

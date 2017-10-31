@@ -1,5 +1,5 @@
 {% set haproxy = salt['grains.filter_by']({
-    'Debian': {
+    'default': {
         'package': 'haproxy',
         'config_file': '/etc/haproxy/haproxy.cfg',
         'config_file_source': 'salt://haproxy/templates/haproxy.jinja',
@@ -7,5 +7,8 @@
         'group': 'root',
         'service': 'haproxy',
     },
-}, merge=salt['pillar.get']('haproxy:lookup')) %}
+    'FreeBSD': {
+        'group': 'wheel',
+    },
+}, merge=salt['pillar.get']('haproxy:lookup'), base='default') %}
 

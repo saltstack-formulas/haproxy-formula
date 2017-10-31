@@ -7,9 +7,6 @@ haproxy.config:
    - source: {{ haproxy.config_file_source }}
    - template: jinja
    - user: {{ haproxy.user }}
-   {% if salt['grains.get']('os_family') == 'FreeBSD' %}
-   - group: wheel
-   {% else %}
    - group: {{ haproxy.group }}
    {% endif %}
    - mode: 644

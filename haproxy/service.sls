@@ -1,7 +1,9 @@
+{% from "haproxy/map.jinja" import haproxy with context %}
+
 haproxy.service:
 {% if salt['pillar.get']('haproxy:enable', True) %}
   service.running:
-    - name: haproxy
+    - name: {{ haproxy.service }}
     - enable: True
     - reload: True
     - require:

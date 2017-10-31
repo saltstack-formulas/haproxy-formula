@@ -1,6 +1,8 @@
+{% from "haproxy/map.jinja" import haproxy with context %}
+
 haproxy.install:
   pkg.installed:
-    - name: haproxy
+    - name: {{ haproxy.package }}
 {% if salt['pillar.get']('haproxy:require') %}
     - require:
 {% for item in salt['pillar.get']('haproxy:require') %}

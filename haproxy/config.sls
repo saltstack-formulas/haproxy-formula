@@ -8,7 +8,6 @@ haproxy.config:
    - template: jinja
    - user: {{ haproxy.user }}
    - group: {{ haproxy.group }}
-   {% endif %}
    - mode: 644
    - require_in:
      - service: haproxy.service

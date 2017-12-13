@@ -1,14 +1,13 @@
+{% from "haproxy/map.jinja" import haproxy with context %}
+
+{% set config_file = salt['pillar.get']('haproxy:config_file_path', haproxy.config_file) %}
 haproxy.config:
  file.managed:
-   - name: {{ salt['pillar.get']('haproxy:config_file_path', '/etc/haproxy/haproxy.cfg') }}
-   - source: salt://haproxy/templates/haproxy.jinja
+   - name: {{ config_file }}
+   - source: {{ haproxy.config_file_source }}
    - template: jinja
-   - user: root
-   {% if salt['grains.get']('os_family') == 'FreeBSD' %}
-   - group: wheel
-   {% else %}
-   - group: root
-   {% endif %}
+   - user: {{ haproxy.user }}
+   - group: {{ haproxy.group }}
    - mode: 644
    - require_in:
      - service: haproxy.service
@@ -16,5 +15,5 @@ haproxy.config:
      - service: haproxy.service
    {% if salt['pillar.get']('haproxy:overwrite', default=True) == False %}
    - unless:
-     - test -e {{ salt['pillar.get']('haproxy:config_file_path', '/etc/haproxy/haproxy.cfg') }}
+     - test -e {{ config_file }}
    {% endif %}

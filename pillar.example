@@ -3,9 +3,16 @@
 #
 
 haproxy:
+  # use lookup section to override 'map.jinja' values
+  #lookup:
+    #user: 'custom-user'
+    #group: 'custom-group'
+    # new setting to override configuration file path
+    #config_file: /etc/haproxy/haproxy.cfg
   enabled: True
   overwrite: True # Overwrite an existing config file if present (default behaviour unless set to false)
-  config_file_path: /etc/haproxy/haproxy.cfg
+  # old setting to override configuration file path, kept for compatibility
+  #config_file_path: /etc/haproxy/haproxy.cfg
   global:
     log:
       - 127.0.0.1 local2

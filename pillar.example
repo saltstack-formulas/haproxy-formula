@@ -121,23 +121,23 @@ haproxy:
         - "X-Forwarded-Proto:\\ http"
       default_backend: www-backend
 
-    www-https:
-      bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
-      logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r\\ ssl_version:%sslv\\ ssl_cipher:%sslc"
-      reqadds:
-        - "X-Forwarded-Proto:\\ https"
-      default_backend: www-backend
-      acls:
-        - url_static       path_beg       -i /static /images /javascript /stylesheets
-        - url_static       path_end       -i .jpg .gif .png .css .js
-      use_backends:
-        - static-backend  if url_static
-      extra: "rspadd  Strict-Transport-Security:\ max-age=15768000"
-    some-services:
-      bind:
-        - "*:8080"
-        - "*:8088"
-      default_backend: api-backend
+#    www-https:
+#      bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
+#      logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r\\ ssl_version:%sslv\\ ssl_cipher:%sslc"
+#      reqadds:
+#        - "X-Forwarded-Proto:\\ https"
+#      default_backend: www-backend
+#      acls:
+#        - url_static       path_beg       -i /static /images /javascript /stylesheets
+#        - url_static       path_end       -i .jpg .gif .png .css .js
+#      use_backends:
+#        - static-backend  if url_static
+#      extra: "rspadd  Strict-Transport-Security:\ max-age=15768000"
+#    some-services:
+#      bind:
+#        - "*:8080"
+#        - "*:8088"
+#      default_backend: api-backend
 
   backends:
     backend1:

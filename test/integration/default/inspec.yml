@@ -1,0 +1,6 @@
+name: default
+title: Default Profile
+version: 0.1.0
+supports:
+  - os-name: debian
+

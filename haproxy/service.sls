@@ -1,4 +1,4 @@
-{% from "haproxy/map.jinja" import haproxy with context %}
+{% from tpldir ~ "/map.jinja" import haproxy with context %}
 
 haproxy.service:
 {% if salt['pillar.get']('haproxy:enable', True) %}

@@ -1,4 +1,4 @@
-{% from "haproxy/map.jinja" import haproxy with context %}
+{% from tpldir ~ "/map.jinja" import haproxy with context %}
 
 {% set config_file = salt['pillar.get']('haproxy:config_file_path', haproxy.config_file) %}
 haproxy.config:

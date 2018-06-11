@@ -226,13 +226,7 @@ listen {{ listener.get('name', listener_name) }}
     {%- endif %}
     
     {%- if 'reqreps' in listener %}
-      {%- if listener.reqreps is string %}
-    reqrep {{ listener.reqreps }}
-      {%- else %}
-        {%- for reqreps in listener.reqreps %}
-    reqrep {{ reqreps }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('reqrep', listener.reqreps) }}
     {%- endif %}
 
     {%- if 'monitoruri' in listener %}

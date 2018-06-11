@@ -224,6 +224,17 @@ listen {{ listener.get('name', listener_name) }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
+    
+    {%- if 'reqreps' in listener %}
+      {%- if listener.reqreps is string %}
+    reqrep {{ listener.reqreps }}
+      {%- else %}
+        {%- for reqreps in listener.reqreps %}
+    reqrep {{ reqreps }}
+        {%- endfor %}
+      {%- endif %}
+    {%- endif %}
+
     {%- if 'monitoruri' in listener %}
     monitor-uri {{ listener.monitoruri }}
     {%- endif %}

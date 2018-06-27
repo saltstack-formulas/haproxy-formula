@@ -22,6 +22,8 @@ haproxy:
       socketpath: /var/lib/haproxy/stats
       mode: 660
       level: admin
+      # Optional extra bind parameter, for example to set the owner/group on the socket file
+      extra: user haproxy group haproxy
     ssl-default-bind-ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384"
     ssl-default-bind-options: "no-sslv3 no-tlsv10 no-tlsv11"
 

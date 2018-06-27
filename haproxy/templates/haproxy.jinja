@@ -40,7 +40,7 @@ global
     daemon
 {%- endif %}
 {%- if salt['pillar.get']('haproxy:global:stats:enable', 'no') == True %}
-    stats socket {{ salt['pillar.get']('haproxy:global:stats:socketpath', '/tmp/ha_stats.sock') }} mode {{ salt['pillar.get']('haproxy:global:stats:mode', '660') }} level {{ salt['pillar.get']('haproxy:global:stats:level', 'operator') }}
+    stats socket {{ salt['pillar.get']('haproxy:global:stats:socketpath', '/tmp/ha_stats.sock') }} mode {{ salt['pillar.get']('haproxy:global:stats:mode', '660') }} level {{ salt['pillar.get']('haproxy:global:stats:level', 'operator') }}{% if 'extra' in salt['pillar.get']('haproxy:global:stats', {}) %} {{ salt['pillar.get']('haproxy:global:stats:extra') }}{% endif %}
 {%- endif %}
 {%- if 'maxconn' in salt['pillar.get']('haproxy:global', {}) %}
     maxconn {{ salt['pillar.get']('haproxy:global:maxconn') }}

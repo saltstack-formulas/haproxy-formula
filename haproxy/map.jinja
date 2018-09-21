@@ -8,6 +8,7 @@
         'service': 'haproxy',
     },
     'FreeBSD': {
+        'config_file': '/usr/local/etc/haproxy.conf',
         'group': 'wheel',
     },
 }, merge=salt['pillar.get']('haproxy:lookup'), base='default') %}

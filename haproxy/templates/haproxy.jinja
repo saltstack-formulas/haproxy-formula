@@ -510,6 +510,15 @@ backend {{ backend.get('name', backend_name) }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'tcpchecks' in backend %}
+      {%- if backend.tcpchecks is string %}
+    tcp-check {{ backend.tcpchecks }}
+      {%- else %}
+        {%- for tcpcheck in backend.tcpchecks %}
+    tcp-check {{ tcpcheck }}
+        {%- endfor %}
+      {%- endif %}
+    {%- endif %}
     {%- if 'httprequests' in backend %}
       {%- if backend.httprequests is string %}
     http-request {{ backend.httprequests }}

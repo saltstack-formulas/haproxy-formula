@@ -1,0 +1,57 @@
+---
+driver:
+  name: docker
+
+driver_config:
+  use_sudo: false
+  privileged: true
+  provision_command: mkdir -p /run/sshd
+  run_command: /lib/systemd/systemd
+
+platforms:
+  - name: debian-9
+#  - name: ubuntu-18.04
+#  - name: fedora-27
+#  - name: centos-7
+
+provisioner:
+  name: salt_solo
+  log_level: info
+  require_chef: false
+  salt_install: bootstrap
+  salt_version: latest
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  salt_bootstrap_options: -X -p git -p curl -p sudo
+
+  formula: haproxy
+  dependencies:
+    - name: hosts
+      path: ./test/salt/salt
+
+  pillars_from_files:
+    haproxy.sls: pillar.example
+    hosts.sls: ./test/salt/pillar/hosts.sls
+
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - hosts
+          - haproxy
+
+  state_top:
+    base:
+      '*':
+        - hosts
+        - haproxy
+
+verifier:
+  name: inspec
+  reporter: 
+    - cli
+  inspec_tests:
+    - path: test/integration/default
+
+suites:
+  - name: default
+

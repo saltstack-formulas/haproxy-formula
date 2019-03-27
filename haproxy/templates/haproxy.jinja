@@ -31,6 +31,12 @@ global
     log /dev/log    local0
     log /dev/log    local1 notice
 {%- endif %}
+{%- if salt['pillar.get']('haproxy:global:log-tag') %}
+    log-tag {{ salt['pillar.get']('haproxy:global:log-tag', 'haproxy') }}
+{%- endif %}
+{%- if salt['pillar.get']('haproxy:global:log-send-hostname') %}
+    log-send-hostname {{ salt['pillar.get']('haproxy:global:log-send-hostname') }}
+{%- endif %}
     user {{ salt['pillar.get']('haproxy:global:user', 'haproxy') }}
     group {{ salt['pillar.get']('haproxy:global:group', 'haproxy') }}
 {%- if salt['pillar.get']('haproxy:global:chroot:enable', 'no') == True %}

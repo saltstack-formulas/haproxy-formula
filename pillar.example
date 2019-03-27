@@ -17,6 +17,10 @@ haproxy:
     log:
       - 127.0.0.1 local2
       - 127.0.0.1 local1 notice
+    # Option log-tag parameter, sets the tag field in the syslog header
+    log-tag: haproxy
+    # Optional log-send-hostname parameter, sets the hostname field in the syslog header
+    log-send-hostname: localhost
     stats:
       enable: True
       socketpath: /var/lib/haproxy/stats

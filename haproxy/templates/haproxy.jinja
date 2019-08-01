@@ -200,6 +200,11 @@ listen {{ listener.get('name', listener_name) }}
     {%- if 'mode' in listener %}
     mode {{ listener.mode }}
     {%- endif %}
+    {%- if 'errorfiles' in listener %}
+      {%- for errorfile_name, errorfile in listener.errorfiles|dictsort %}
+    errorfile {{ errorfile_name }} {{ errorfile }}
+      {%- endfor %}
+    {% endif %}
     {%- if 'hashtype' in listener %}
     hash-type {{ listener.hashtype }}
     {%- endif %}
@@ -485,6 +490,11 @@ backend {{ backend.get('name', backend_name) }}
     {%- if 'mode' in backend %}
     mode {{ backend.mode }}
     {%- endif %}
+    {%- if 'errorfiles' in backend %}
+      {%- for errorfile_name, errorfile in backend.errorfiles|dictsort %}
+    errorfile {{ errorfile_name }} {{ errorfile }}
+      {%- endfor %}
+    {% endif %}
     {%- if 'hashtype' in backend %}
     hash-type {{ backend.hashtype }}
     {%- endif %}

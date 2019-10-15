@@ -70,14 +70,14 @@ haproxy:
       - realm: 'Haproxy\ Statistics'
       - auth: 'admin1:AdMiN123'
 
-    errorfiles:
-      400: /etc/haproxy/errors/400.http
-      403: /etc/haproxy/errors/403.http
-      408: /etc/haproxy/errors/408.http
-      500: /etc/haproxy/errors/500.http
-      502: /etc/haproxy/errors/502.http
-      503: /etc/haproxy/errors/503.http
-      504: /etc/haproxy/errors/504.http
+    # errorfiles:
+    #   400: /etc/haproxy/errors/400.http
+    #   403: /etc/haproxy/errors/403.http
+    #   408: /etc/haproxy/errors/408.http
+    #   500: /etc/haproxy/errors/500.http
+    #   502: /etc/haproxy/errors/502.http
+    #   503: /etc/haproxy/errors/503.http
+    #   504: /etc/haproxy/errors/504.http
 
   {# Suported by HAProxy 1.6 #}
   resolvers:

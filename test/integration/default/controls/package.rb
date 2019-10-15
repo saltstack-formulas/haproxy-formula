@@ -1,6 +1,9 @@
-title 'Verify haproxy installation'
+# frozen_string_literal: true
 
-describe package('haproxy') do
+control 'HAProxy package' do
+  title 'should be installed'
+
+  describe package('haproxy') do
     it { should be_installed }
+  end
 end
-

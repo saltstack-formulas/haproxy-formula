@@ -1,6 +1,7 @@
 {% from tpldir ~ "/map.jinja" import haproxy with context %}
 
 {% set config_file = salt['pillar.get']('haproxy:config_file_path', haproxy.config_file) %}
+
 haproxy.config:
  file.managed:
    - name: {{ config_file }}
@@ -17,3 +18,14 @@ haproxy.config:
    - unless:
      - test -e {{ config_file }}
    {% endif %}
+
+
+{% if salt['grains.get']('os_family') == 'Arch' %}
+haproxy/config/var_dir:
+  file.directory:
+    - name: /var/lib/haproxy
+    - require_in:
+      - service: haproxy.service
+    - watch_in:
+      - service: haproxy.service
+{% endif %}

@@ -79,14 +79,13 @@ haproxy:
     #   503: /etc/haproxy/errors/503.http
     #   504: /etc/haproxy/errors/504.http
 
-  {# Suported by HAProxy 1.6 #}
-  resolvers:
-    local_dns:
-      options:
-        - nameserver resolvconf 127.0.0.1:53
-        - resolve_retries 3
-        - timeout retry 1s
-        - hold valid 10s
+  # resolvers:
+  #   local_dns:
+  #     options:
+  #       - nameserver resolvconf 127.0.0.1:53
+  #       - resolve_retries 3
+  #       - timeout retry 1s
+  #       - hold valid 10s
 
 
   listens:
@@ -223,7 +222,7 @@ haproxy:
           host: apiserver2.example.com
           port: 80
           check: check
-          extra: resolvers local_dns resolve-prefer ipv4
+          # extra: resolvers local_dns resolve-prefer ipv4
     another_www:
       mode: tcp
       balance: source

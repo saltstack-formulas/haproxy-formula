@@ -123,7 +123,28 @@ haproxy:
           check: check
         web3:
           host: web3.example.com
-
+    redis:
+      bind:
+        - "*:6379
+      balance: roundrobin
+      defaultserver:
+        fall: 3
+      options:
+        - tcp-check
+      tcpchecks:
+        - send PINGrn
+        - expect string +PONG
+        - send info replicationrn
+        - expect string role:master
+        - send QUITrn
+        - expect string +OK
+      servers:
+        redis1:
+          host: redis1
+          port: 6379
+        redis2:
+          host: redis2
+          port: 6379  
   frontends:
     frontend1:
       name: www-http

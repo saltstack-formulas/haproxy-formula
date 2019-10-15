@@ -1,6 +1,18 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
 name: default
-title: Default Profile
-version: 0.1.0
+title: haproxy formula
+maintainer: SaltStack Formulas
+license: Apache-2.0
+summary: Verify that the haproxy formula is setup and configured correctly
 supports:
-  - os-name: debian
-
+  - platform-name: debian
+  - platform-name: ubuntu
+  - platform-name: centos
+  - platform-name: fedora
+  - platform-name: opensuse
+  - platform-name: suse
+  - platform-name: freebsd
+  - platform-name: amazon
+  - platform-name: arch

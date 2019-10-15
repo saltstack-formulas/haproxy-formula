@@ -210,7 +210,7 @@ suites:
               - hosts
               - haproxy
       pillars_from_files:
-        haproxy.sls: pillar.example
+        haproxy.sls: test/salt/pillar/haproxy.sls
         hosts.sls: test/salt/pillar/hosts.sls
     verifier:
       inspec_tests:

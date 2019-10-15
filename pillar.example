@@ -125,7 +125,7 @@ haproxy:
           host: web3.example.com
     redis:
       bind:
-        - "*:6379
+        - '*:6379'
       balance: roundrobin
       defaultserver:
         fall: 3
@@ -139,12 +139,16 @@ haproxy:
         - send QUITrn
         - expect string +OK
       servers:
-        redis1:
-          host: redis1
+        server1:
+          host: server1
           port: 6379
-        redis2:
-          host: redis2
-          port: 6379  
+          check: check
+          extra: port 6379 inter 1s
+        server2:
+          host: server2
+          port: 6379
+          check: check
+          extra: port 6379 inter 1s backup
   frontends:
     frontend1:
       name: www-http

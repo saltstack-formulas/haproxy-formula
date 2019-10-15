@@ -268,6 +268,15 @@ listen {{ listener.get('name', listener_name) }}
     http-check {{ listener.httpcheck }}
       {%- endif %}
     {%- endif %}
+    {%- if 'tcpchecks' in listener %}
+      {%- if listener.tcpchecks is string %}
+    tcp-check {{ listener.tcpchecks }}
+      {%- else %}
+        {%- for tcpcheck in listener.tcpchecks %}
+    tcp-check {{ tcpcheck }}
+        {%- endfor %}
+      {%- endif %}
+    {%- endif %}
     {%- if 'reqadds' in listener %}
       {%- if listener.reqadds is string %}
     reqadd {{ listener.reqadds }}

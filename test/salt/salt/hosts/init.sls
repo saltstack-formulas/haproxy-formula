@@ -1,4 +1,3 @@
-
 {% set hosts = salt['pillar.get']('hosts', []) %}
 
 {% for host in hosts %}
@@ -8,4 +7,3 @@
     - ip: {{ ip }}
   {% endfor %}
 {% endfor %}
-

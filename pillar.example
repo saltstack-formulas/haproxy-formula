@@ -1,18 +1,21 @@
 #
 # Example pillar configuration
 #
+---
 
 haproxy:
   # use lookup section to override 'map.jinja' values
-  #lookup:
-    #user: 'custom-user'
-    #group: 'custom-group'
-    # new setting to override configuration file path
-    #config_file: /etc/haproxy/haproxy.cfg
-  enabled: True
-  overwrite: True # Overwrite an existing config file if present (default behaviour unless set to false)
+  # lookup:
+  #   user: 'custom-user'
+  #   group: 'custom-group'
+  #   new setting to override configuration file path
+  #   config_file: /etc/haproxy/haproxy.cfg
+  enabled: true
+  # Overwrite an existing config file if present
+  # (default behaviour unless set to false)
+  overwrite: true
   # old setting to override configuration file path, kept for compatibility
-  #config_file_path: /etc/haproxy/haproxy.cfg
+  # config_file_path: /etc/haproxy/haproxy.cfg
   global:
     log:
       - 127.0.0.1 local2
@@ -22,22 +25,24 @@ haproxy:
     # Optional log-send-hostname parameter, sets the hostname field in the syslog header
     log-send-hostname: localhost
     stats:
-      enable: True
+      enable: true
       socketpath: /var/lib/haproxy/stats
       mode: 660
       level: admin
+      # yamllint disable-line rule:line-length
       # Optional extra bind parameter, for example to set the owner/group on the socket file
       extra: user haproxy group haproxy
+    # yamllint disable-line rule:line-length
     ssl-default-bind-ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384"
     ssl-default-bind-options: "no-sslv3 no-tlsv10 no-tlsv11"
 
     user: haproxy
     group: haproxy
     chroot:
-      enable: True
+      enable: true
       path: /var/lib/haproxy
 
-    daemon: True
+    daemon: true
 
 
   userlists:
@@ -45,9 +50,6 @@ haproxy:
       users:
         john: insecure-password doe
         sam: insecure-password frodo
-#      groups:
-#        admins: users john sam
-#        guests: users jekyll hyde jane
 
   defaults:
     log: global
@@ -58,6 +60,7 @@ haproxy:
       - dontlognull
       - forwardfor
       - http-server-close
+    # yamllint disable-line rule:line-length
     logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r"
     timeouts:
       - http-request    10s
@@ -82,7 +85,6 @@ haproxy:
       503: /etc/haproxy/errors/503.http
       504: /etc/haproxy/errors/504.http
 
-  {# Suported by HAProxy 1.6 #}
   resolvers:
     local_dns:
       options:
@@ -98,7 +100,7 @@ haproxy:
         - "0.0.0.0:8998"
       mode: http
       stats:
-        enable: True
+        enable: true
         uri: "/admin?stats"
         refresh: "20s"
     myservice:
@@ -153,35 +155,36 @@ haproxy:
     frontend1:
       name: www-http
       bind: "*:80"
-      redirects: 
+      redirects:
         - scheme https if !{ ssl_fc }
       reqadds:
         - "X-Forwarded-Proto:\\ http"
       default_backend: www-backend
 
-#    www-https:
-#      bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
-#      logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r\\ ssl_version:%sslv\\ ssl_cipher:%sslc"
-#      reqadds:
-#        - "X-Forwarded-Proto:\\ https"
-#      default_backend: www-backend
-#      acls:
-#        - url_static       path_beg       -i /static /images /javascript /stylesheets
-#        - url_static       path_end       -i .jpg .gif .png .css .js
-#      use_backends:
-#        - static-backend  if url_static
-#      extra: "rspadd  Strict-Transport-Security:\ max-age=15768000"
-#    some-services:
-#      bind:
-#        - "*:8080"
-#        - "*:8088"
-#      default_backend: api-backend
+  # www-https:
+  #   bind: "*:443 ssl crt /etc/ssl/private/certificate-chain-and-key-combined.pem"
+  # yamllint disable-line rule:line-length
+  #   logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r\\ ssl_version:%sslv\\ ssl_cipher:%sslc"
+  #   reqadds:
+  #        - "X-Forwarded-Proto:\\ https"
+  #      default_backend: www-backend
+  #      acls:
+  #        - url_static       path_beg       -i /static /images /javascript /stylesheets
+  #        - url_static       path_end       -i .jpg .gif .png .css .js
+  #      use_backends:
+  #        - static-backend  if url_static
+  #      extra: "rspadd  Strict-Transport-Security:\ max-age=15768000"
+  #    some-services:
+  #      bind:
+  #        - "*:8080"
+  #        - "*:8088"
+  #      default_backend: api-backend
 
   backends:
     backend1:
       name: www-backend
       balance: roundrobin
-      redirects: 
+      redirects:
         - scheme https if !{ ssl_fc }
       extra: "reqidel ^X-Forwarded-For:"
       servers:
@@ -192,7 +195,7 @@ haproxy:
           check: check
     static-backend:
       balance: roundrobin
-      redirects: 
+      redirects:
         - scheme https if !{ ssl_fc }
       options:
         - http-server-close
@@ -201,7 +204,7 @@ haproxy:
         - httplog
       cookie: "pm insert indirect"
       stats:
-        enable: True
+        enable: true
         uri: /url/to/stats
         realm: LoadBalancer
         auth: "user:password"

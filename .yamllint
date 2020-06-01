@@ -12,6 +12,7 @@ ignore: |
   node_modules/
   test/**/states/**/*.sls
   .kitchen/
+  test/salt/salt/hosts/init.sls
 
 yaml-files:
   # Default settings

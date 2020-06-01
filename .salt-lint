@@ -2,7 +2,9 @@
 # vim: ft=yaml
 ---
 exclude_paths: []
-rules: {}
+rules:
+  204:
+    ignore: 'haproxy/templates/haproxy.jinja'
 skip_list:
   # Using `salt-lint` for linting other files as well, such as Jinja macros/templates
   - 205  # Use ".sls" as a Salt State file extension

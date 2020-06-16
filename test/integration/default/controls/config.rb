@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 title 'Verify haproxy configuration'
 
 describe file('/etc/haproxy/haproxy.cfg') do
@@ -6,4 +8,3 @@ describe file('/etc/haproxy/haproxy.cfg') do
   its('group') { should eq 'root' }
   its('mode') { should cmp '0644' }
 end
-

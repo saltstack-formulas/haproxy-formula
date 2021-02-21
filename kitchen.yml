@@ -162,8 +162,8 @@ suites:
               - hosts
               - haproxy
       pillars_from_files:
-        haproxy.sls: pillar.example
         hosts.sls: test/salt/pillar/hosts.sls
+        haproxy.sls: test/salt/pillar/default.sls
       dependencies:
         - name: hosts
           path: ./test/salt/salt

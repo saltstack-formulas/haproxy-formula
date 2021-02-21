@@ -282,10 +282,10 @@ listen {{ listener.get('name', listener_name) }}
     {%- endif %}
     {%- if 'reqadds' in listener %}
       {%- if listener.reqadds is string %}
-    reqadd {{ listener.reqadds }}
+    http-request add-header {{ listener.reqadds }}
       {%- else %}
         {%- for reqadd in listener.reqadds %}
-    reqadd {{ reqadd }}
+    http-request add-header {{ reqadd }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
@@ -450,7 +450,7 @@ frontend {{ frontend.get('name', frontend_name) }}
     {{- render_list_of_dictionaries('reqrep', frontend.reqreps) }}
     {%- endif %}
     {%- if 'reqadds' in frontend %}
-    {{- render_list_of_dictionaries('reqadd', frontend.reqadds) }}
+    {{- render_list_of_dictionaries('http-request add-header', frontend.reqadds) }}
     {%- endif %}
     {%- if 'redirects' in frontend %}
     {{- render_list_of_dictionaries('redirect', frontend.redirects) }}

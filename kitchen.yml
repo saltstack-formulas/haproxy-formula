@@ -315,6 +315,7 @@ suites:
       state_top:
         base:
           '*':
+            - haproxy._mapdata
             - hosts
             - haproxy
       pillars:

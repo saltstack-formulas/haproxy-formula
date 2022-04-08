@@ -266,7 +266,15 @@ listen {{ listener.get('name', listener_name) }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'httpcheck' in listener %}
+    {%- if 'httpchecks' in listener %}
+      {%- if listener.httpchecks is string %}
+    http-check {{ listener.httpchecks }}
+      {%- else %}
+        {%- for httpcheck in listener.httpchecks %}
+    http-check {{ httpcheck }}
+        {%- endfor %}
+      {%- endif %}
+    {%- elif 'httpcheck' in listener %}{# deprecated: but for compatibility #}
       {%- if listener.httpcheck is string %}
     http-check {{ listener.httpcheck }}
       {%- endif %}
@@ -547,7 +555,15 @@ backend {{ backend.get('name', backend_name) }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
-    {%- if 'httpcheck' in backend %}
+    {%- if 'httpchecks' in backend %}
+      {%- if backend.httpchecks is string %}
+    http-check {{ backend.httpchecks }}
+      {%- else %}
+        {%- for httpcheck in backend.httpchecks %}
+    http-check {{ httpcheck }}
+        {%- endfor %}
+      {%- endif %}
+    {%- elif 'httpcheck' in backend %}{# deprecated: but for compatibility #}
       {%- if backend.httpcheck is string %}
     http-check {{ backend.httpcheck }}
       {%- endif %}

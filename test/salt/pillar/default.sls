@@ -79,6 +79,9 @@ haproxy:
       bind:
         - "0.0.0.0:8998"
       mode: http
+      options:
+        - httpchk
+      httpcheck: disable-on-404
       stats:
         enable: true
         uri: "/admin?stats"
@@ -89,11 +92,15 @@ haproxy:
       options:
         - forwardfor
         - http-server-close
+        - httpchk
       defaultserver:
         slowstart: 60s
         maxconn: 256
         maxqueue: 128
         weight: 100
+      httpchecks:
+        - send-state
+        - expect status 200
       servers:
         web1:
           host: web1.example.com

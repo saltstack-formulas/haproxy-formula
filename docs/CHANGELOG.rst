@@ -2,6 +2,43 @@
 Changelog
 =========
 
+`0.18.0 <https://github.com/saltstack-formulas/haproxy-formula/compare/v0.17.1...v0.18.0>`_ (2022-04-08)
+------------------------------------------------------------------------------------------------------------
+
+Continuous Integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+* **kitchen+gitlab:** update for new pre-salted images [skip ci] (\ `eb1dfad <https://github.com/saltstack-formulas/haproxy-formula/commit/eb1dfad99d02a3bb8b7fd27b81a6433dbd778e80>`_\ )
+* update linters to latest versions [skip ci] (\ `668fcd0 <https://github.com/saltstack-formulas/haproxy-formula/commit/668fcd078479b962f0a058e9e2599db9eef5508e>`_\ )
+* **3003.1:** update inc. AlmaLinux, Rocky & ``rst-lint`` [skip ci] (\ `dd43437 <https://github.com/saltstack-formulas/haproxy-formula/commit/dd43437343ae825a65d0b220ef615218894300a9>`_\ )
+* **gemfile:** allow rubygems proxy to be provided as an env var [skip ci] (\ `07ffdfe <https://github.com/saltstack-formulas/haproxy-formula/commit/07ffdfe3c87ff9733408e38599aa6e2d4ec14db0>`_\ )
+* **gemfile+lock:** use ``ssf`` customised ``inspec`` repo [skip ci] (\ `df108e6 <https://github.com/saltstack-formulas/haproxy-formula/commit/df108e6114b9809a544b9e94e3be22be3983643d>`_\ )
+* **kitchen:** move ``provisioner`` block & update ``run_command`` [skip ci] (\ `7a79c5b <https://github.com/saltstack-formulas/haproxy-formula/commit/7a79c5bd4af4967ba3e347f835c73112d893ec4d>`_\ )
+* **kitchen+ci:** update with ``3004`` pre-salted images/boxes [skip ci] (\ `9458feb <https://github.com/saltstack-formulas/haproxy-formula/commit/9458febc34151b3b2c67e654264b9ebea11ca319>`_\ )
+* **kitchen+ci:** update with latest ``3003.2`` pre-salted images [skip ci] (\ `8edd6ac <https://github.com/saltstack-formulas/haproxy-formula/commit/8edd6acdacc1bc098d5067323e23a45dbb8e69aa>`_\ )
+* **kitchen+ci:** update with latest CVE pre-salted images [skip ci] (\ `39e8288 <https://github.com/saltstack-formulas/haproxy-formula/commit/39e8288821a044705aadb0e29ef715d6913f468f>`_\ )
+* **kitchen+ci:** use latest pre-salted images (after CVE) [skip ci] (\ `c16996b <https://github.com/saltstack-formulas/haproxy-formula/commit/c16996bc7a454b2c799f4fd44e4f8586cfb58d56>`_\ )
+* **kitchen+gitlab:** update for new pre-salted images [skip ci] (\ `ff5224a <https://github.com/saltstack-formulas/haproxy-formula/commit/ff5224ad5241f918ecd53412c66247c4d135f993>`_\ )
+* add Debian 11 Bullseye & update ``yamllint`` configuration [skip ci] (\ `ac38984 <https://github.com/saltstack-formulas/haproxy-formula/commit/ac38984da71bd427433ae92f0ecce6d4919f2fc1>`_\ )
+* **kitchen+gitlab:** remove Ubuntu 16.04 & Fedora 32 (EOL) [skip ci] (\ `0bfccc2 <https://github.com/saltstack-formulas/haproxy-formula/commit/0bfccc2515481a135e66fe4e0702bcce1d883460>`_\ )
+* add ``arch-master`` to matrix and update ``.travis.yml`` [skip ci] (\ `14f640a <https://github.com/saltstack-formulas/haproxy-formula/commit/14f640ad44eaa0abde7dc7d1cf2c7c3146c05bff>`_\ )
+* **kitchen+gitlab:** adjust matrix to add ``3003`` [skip ci] (\ `2fb3a67 <https://github.com/saltstack-formulas/haproxy-formula/commit/2fb3a67082513c199d1c713ba1836338cec0ba97>`_\ )
+
+Features
+^^^^^^^^
+
+
+* **httpchecks:** support multiple httpcheck lines (\ `1187532 <https://github.com/saltstack-formulas/haproxy-formula/commit/1187532cc26e0b79c1b3e8e1fc8718454ffb7730>`_\ )
+
+Tests
+^^^^^
+
+
+* **default:** add ``httpcheck`` & ``httpchecks`` values to test pillar (\ `8977843 <https://github.com/saltstack-formulas/haproxy-formula/commit/897784372d51d5bef0b1c12d189f5905746937a9>`_\ )
+* **system:** add ``build_platform_codename`` [skip ci] (\ `9f90d8a <https://github.com/saltstack-formulas/haproxy-formula/commit/9f90d8a84738cba0f34474976a225be639a23451>`_\ )
+* standardise use of ``share`` suite & ``_mapdata`` state [skip ci] (\ `9989cb5 <https://github.com/saltstack-formulas/haproxy-formula/commit/9989cb5080cca8889f37b48c134e7bc6d2deb09f>`_\ )
+
 `0.17.1 <https://github.com/saltstack-formulas/haproxy-formula/compare/v0.17.0...v0.17.1>`_ (2021-03-04)
 ------------------------------------------------------------------------------------------------------------
 

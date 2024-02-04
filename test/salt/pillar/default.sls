@@ -21,14 +21,13 @@ haproxy:
     # Optional log-send-hostname parameter, sets the hostname field in the syslog header
     log-send-hostname: localhost
     stats:
-      enable: true
-      # Using the `haproxy:global:chroot:path`
-      socketpath: /var/lib/haproxy/stats
-      mode: 660
-      level: admin
-      # yamllint disable-line rule:line-length
-      # Optional extra bind parameter, for example to set the owner/group on the socket file
-      extra: user haproxy group haproxy
+      /run/haproxy/stats-operator:
+        level: operator
+        mode: 660
+        group: users
+      /run/haproxy/stats-admin:
+        level: admin
+        mode: 600
     # yamllint disable-line rule:line-length
     ssl-default-bind-ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA384"
     ssl-default-bind-options: "no-sslv3 no-tlsv10 no-tlsv11"

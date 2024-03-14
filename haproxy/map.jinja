@@ -6,10 +6,14 @@
         'user': 'root',
         'group': 'root',
         'service': 'haproxy',
+        'manage_directories': True,
     },
     'FreeBSD': {
         'config_file': '/usr/local/etc/haproxy.conf',
         'group': 'wheel',
+    },
+    'Suse': {
+        'manage_directories': False,
     },
 }, merge=salt['pillar.get']('haproxy:lookup'), base='default') %}
 

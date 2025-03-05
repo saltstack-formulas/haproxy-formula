@@ -75,6 +75,9 @@ global
 {%- if 'ssl-default-bind-options' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
 {%- endif %}
+{%- if 'localpeer' in salt['pillar.get']('haproxy:global', {}) %}
+    localpeer {{ salt['pillar.get']('haproxy:global:localpeer') }}
+{%- endif %}
 {%- if 'extra' in salt['pillar.get']('haproxy:global', {}) %}
   {%- if salt['pillar.get']('haproxy:global:extra', {}) is string %}
     {{ salt['pillar.get']('haproxy:global:extra') }}
@@ -103,6 +106,36 @@ userlist {{ id }}
   {% endif %}
   {%- endfor %}
 {% endfor %}
+
+{%- for group, peers in salt['pillar.get']('haproxy:peers', {}).items() %}
+peers {{ group }}
+    {%- for peer, data in peers.get('peers', {}).items() %}
+    {%- if data is mapping %}
+    peer {{ peer }}{{ ' ' ~ data.address if 'address' in data else '' }}{{ ':' ~ data.port if 'port' in data else '' }}{{ ' ' ~ data.extra if 'extra' in data else '' }}
+    {%- else %}
+    peer {{ peer }} {{ data }}
+    {%- endif %}
+    {%- endfor %}
+    {%- if 'bind' in peers %}
+    {%- if peers.bind is mapping %}
+    bind {{ peers.bind.address }}:{{ peers.bind.port }}{{ ' ' ~ peers.bind.extra if 'extra' in peers.bind else '' }}
+    {%- else %}
+    bind {{ peers.bind }}
+    {%- endif %}
+    {%- endif %}
+    {%- if 'default-bind' in peers %}
+    default-bind {{ peers['default-bind'] }}
+    {%- endif %}
+    {%- if 'default-server' in peers %}
+    default-server {{ peers['default-server'] }}
+    {%- endif %}
+    {%- for server, data in peers.get('servers', {}).items() %}
+    server {{ server }}{{ ' ' ~ data.address if 'address' in data else '' }}{{ ':' ~ data.port if 'port' in data else '' }}{{ ' ' ~ data.extra if 'extra' in data else '' }}
+    {%- endfor %}
+    {%- if 'shards' in peers %}
+    shards {{ peers.shards }}
+    {%- endif %}
+{%- endfor %}
 
 #------------------
 # common defaults that all the 'listen' and 'backend' sections will

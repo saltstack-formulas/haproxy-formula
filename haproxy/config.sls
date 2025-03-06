@@ -18,7 +18,8 @@ haproxy.config:
       - test -e {{ config_file }}
     {% endif %}
 
-{% if salt['pillar.get']('haproxy:global:chroot:enable', False) and
+{% if haproxy.manage_directories and
+      salt['pillar.get']('haproxy:global:chroot:enable', False) and
       salt['pillar.get']('haproxy:global:chroot:path', '') %}
 haproxy-chroot-directory:
   file.directory:

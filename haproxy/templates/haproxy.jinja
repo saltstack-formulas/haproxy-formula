@@ -75,6 +75,18 @@ global
 {%- if 'ssl-default-bind-options' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('ssl-default-bind-options', salt['pillar.get']('haproxy:global:ssl-default-bind-options')) }}
 {%- endif %}
+{%- if 'ssl-default-server-ciphers' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-server-ciphers', salt['pillar.get']('haproxy:global:ssl-default-server-ciphers')) }}
+{%- endif %}
+{%- if 'ssl-default-server-options' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-server-options', salt['pillar.get']('haproxy:global:ssl-default-server-options')) }}
+{%- endif %}
+{%- if 'ssl-default-bind-ciphersuites' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-bind-ciphersuites', salt['pillar.get']('haproxy:global:ssl-default-bind-ciphersuites')) }}
+{%- endif %}
+{%- if 'ssl-default-server-ciphersuites' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-server-ciphersuites', salt['pillar.get']('haproxy:global:ssl-default-server-ciphersuites')) }}
+{%- endif %}
 {%- if 'extra' in salt['pillar.get']('haproxy:global', {}) %}
   {%- if salt['pillar.get']('haproxy:global:extra', {}) is string %}
     {{ salt['pillar.get']('haproxy:global:extra') }}
@@ -197,6 +209,11 @@ listen {{ listener.get('name', listener_name) }}
     {%- if 'mode' in listener %}
     mode {{ listener.mode }}
     {%- endif %}
+    {%- if 'errorfiles' in listener %}
+      {%- for errorfile_name, errorfile in listener.errorfiles|dictsort %}
+    errorfile {{ errorfile_name }} {{ errorfile }}
+      {%- endfor %}
+    {% endif %}
     {%- if 'hashtype' in listener %}
     hash-type {{ listener.hashtype }}
     {%- endif %}
@@ -490,6 +507,11 @@ backend {{ backend.get('name', backend_name) }}
     {%- if 'mode' in backend %}
     mode {{ backend.mode }}
     {%- endif %}
+    {%- if 'errorfiles' in backend %}
+      {%- for errorfile_name, errorfile in backend.errorfiles|dictsort %}
+    errorfile {{ errorfile_name }} {{ errorfile }}
+      {%- endfor %}
+    {% endif %}
     {%- if 'hashtype' in backend %}
     hash-type {{ backend.hashtype }}
     {%- endif %}

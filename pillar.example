@@ -81,6 +81,7 @@ haproxy:
       - realm: 'Haproxy\ Statistics'
       - auth: 'admin1:AdMiN123'
 
+    # the same can be set in a per backend/listen as well
     errorfiles:
       400: /etc/haproxy/errors/400.http
       403: /etc/haproxy/errors/403.http

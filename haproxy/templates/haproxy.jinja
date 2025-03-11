@@ -46,7 +46,7 @@ global
     daemon
 {%- endif %}
 {%- for socket, socket_config in salt['pillar.get']('haproxy:global:stats', {}).items() %}
-    stats socket {{ socket }} mode {{ socket_config.get('mode', '0600') }} level {{ socket_config.get('level', 'user') }} user {{ socket_config.get('user', 'haproxy') }} group {{ socket_config.get('group', 'haproxy') }}
+    stats socket {{ socket }} mode {{ socket_config.get('mode', '0600') }} level {{ socket_config.get('level', 'user') }} user {{ socket_config.get('user', 'haproxy') }} group {{ socket_config.get('group', 'haproxy') }}{{ ' expose-fd listeners' if socket_config.get('expose-fd listeners', False) else '' }}
 {%- endfor %}
 {%- if 'maxconn' in salt['pillar.get']('haproxy:global', {}) %}
     maxconn {{ salt['pillar.get']('haproxy:global:maxconn') }}

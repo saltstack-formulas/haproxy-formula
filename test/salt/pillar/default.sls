@@ -25,6 +25,7 @@ haproxy:
         level: operator
         mode: 660
         group: users
+        expose-fd listeners: true
       /run/haproxy/stats-admin:
         level: admin
         mode: 600

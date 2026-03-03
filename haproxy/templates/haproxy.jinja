@@ -544,13 +544,10 @@ backend {{ backend.get('name', backend_name) }}
       {%- endif %}
     {%- endif %}
     {%- if 'httprequests' in backend %}
-      {%- if backend.httprequests is string %}
-    http-request {{ backend.httprequests }}
-      {%- else %}
-        {%- for httprequest in backend.httprequests %}
-    http-request {{ httprequest }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('http-request', backend.httprequests) }}
+    {%- endif %}
+    {%- if 'httpresponses' in backend %}
+    {{- render_list_of_dictionaries('http-response', backend.httpresponses) }}
     {%- endif %}
     {%- if 'httpchecks' in backend %}
       {%- if backend.httpchecks is string %}

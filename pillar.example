@@ -90,6 +90,10 @@ haproxy:
       503: /etc/haproxy/errors/503.http
       504: /etc/haproxy/errors/504.http
 
+  httperrors:
+    corp:
+      503: /etc/haproxy/errors/corp/503.http
+
   resolvers:
     local_dns:
       options:
@@ -171,6 +175,9 @@ haproxy:
         - scheme https if !{ ssl_fc }
       reqadds:
         - "X-Forwarded-Proto:\\ http"
+      httpresponses:
+        - return:
+            - status 503 errorfiles corp if { status 503 }
       default_backend: www-backend
 
   # www-https:

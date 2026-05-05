@@ -160,6 +160,14 @@ defaults
     errorfile {{ errorfile_name }} {{ errorfile }}
   {%- endfor %}
 {% endif %}
+
+{%- for error_name, error_files in salt['pillar.get']('haproxy:httperrors', {}) | dictsort %}
+http-errors {{ error_name }}
+  {%- for code, file in error_files | dictsort %}
+  errorfile {{ code }} {{ file }}
+  {%- endfor %}
+{%- endfor %}
+
 {%- if salt['pillar.get']('haproxy:resolvers') %}
 
 

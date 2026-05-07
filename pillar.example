@@ -175,6 +175,7 @@ haproxy:
         - scheme https if !{ ssl_fc }
       reqadds:
         - "X-Forwarded-Proto:\\ http"
+      errorfiles: corp
       httpresponses:
         - return:
             - status 503 errorfiles corp if { status 503 }

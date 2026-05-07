@@ -160,6 +160,14 @@ defaults
     errorfile {{ errorfile_name }} {{ errorfile }}
   {%- endfor %}
 {% endif %}
+
+{%- for error_name, error_files in salt['pillar.get']('haproxy:httperrors', {}) | dictsort %}
+http-errors {{ error_name }}
+  {%- for code, file in error_files | dictsort %}
+  errorfile {{ code }} {{ file }}
+  {%- endfor %}
+{%- endfor %}
+
 {%- if salt['pillar.get']('haproxy:resolvers') %}
 
 
@@ -311,6 +319,9 @@ listen {{ listener.get('name', listener_name) }}
     stick on {{ stickon }}
         {%- endfor %}
       {%- endif %}
+    {%- endif %}
+    {%- if 'errorfiles' in listener %}
+    errorfiles {{ listener.errorfiles }}
     {%- endif %}
     {%- if 'default_backend' in listener %}
     default_backend {{ listener.default_backend }}
@@ -472,6 +483,9 @@ frontend {{ frontend.get('name', frontend_name) }}
     {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'errorfiles' in frontend %}
+    errorfiles {{ frontend.errorfiles }}
+    {%- endif %}
     {%- if 'default_backend' in frontend %}
     default_backend {{ frontend.default_backend }}
     {%- endif %}
@@ -487,6 +501,9 @@ frontend {{ frontend.get('name', frontend_name) }}
 #------------------
   {%- for backend_name, backend in salt['pillar.get']('haproxy:backends', {})|dictsort %}
 backend {{ backend.get('name', backend_name) }}
+    {%- if 'errorfiles' in backend %}
+    errorfiles {{ backend.errorfiles }}
+    {%- endif %}
     {%- if 'mode' in backend %}
     mode {{ backend.mode }}
     {%- endif %}

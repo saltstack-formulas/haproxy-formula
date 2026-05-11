@@ -255,13 +255,10 @@ listen {{ listener.get('name', listener_name) }}
       {%- endif %}
     {%- endif %}
     {%- if 'httprequests' in listener %}
-      {%- if listener.httprequests is string %}
-    http-request {{ listener.httprequests }}
-      {%- else %}
-        {%- for httprequest in listener.httprequests %}
-    http-request {{ httprequest }}
-        {%- endfor %}
-      {%- endif %}
+    {{- render_list_of_dictionaries('http-request', listener.httprequests) }}
+    {%- endif %}
+    {%- if 'httpresponses' in listener %}
+    {{- render_list_of_dictionaries('http-response', listener.httpresponses) }}
     {%- endif %}
     {%- if 'httpchecks' in listener %}
       {%- if listener.httpchecks is string %}

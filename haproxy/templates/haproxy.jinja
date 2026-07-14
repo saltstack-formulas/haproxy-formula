@@ -160,6 +160,19 @@ defaults
     errorfile {{ errorfile_name }} {{ errorfile }}
   {%- endfor %}
 {% endif %}
+
+{%- for cache_name, cache_options in salt['pillar.get']('haproxy:caches', {}) | dictsort %}
+cache {{ cache_name }}
+  {%- for key, value in cache_options | dictsort %}
+    {%- if value is sameas true %}
+      {%- set value = 'on' %}
+    {%- elif value is sameas false %}
+      {%- set value = 'off' %}
+    {%- endif %}
+    {{ key }} {{ value }}
+  {%- endfor %}
+{%- endfor %}
+
 {%- if salt['pillar.get']('haproxy:resolvers') %}
 
 

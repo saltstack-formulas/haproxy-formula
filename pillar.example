@@ -56,6 +56,11 @@ haproxy:
         john: insecure-password doe
         sam: insecure-password frodo
 
+  caches:
+    myapp-static:
+      max-age: 86400
+      process-vary: true
+
   defaults:
     log: global
     mode: http
